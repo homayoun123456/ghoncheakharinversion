@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستندات API | غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #c2185b 0%, #8e24aa 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-tab:hover, .nav-tab.active {
+            background: #c2185b;
+            color: white;
+        }
+        
+        .endpoint-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .endpoint-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+        
+        .method {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        
+        .method-get { background: #4caf50; color: white; }
+        .method-post { background: #2196f3; color: white; }
+        .method-put { background: #ff9800; color: white; }
+        .method-delete { background: #f44336; color: white; }
+        
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 1rem;
+            flex: 1;
+        }
+        
+        .endpoint-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .endpoint-body {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: none;
+        }
+        
+        .endpoint-body.show {
+            display: block;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 10px 0;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .param-table th, .param-table td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .param-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .param-type {
+            color: #c2185b;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c2185b;
+        }
+        
+        .auth-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        .auth-badge.required {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .test-api {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .test-api input, .test-api select, .test-api textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        
+        .test-api button {
+            background: #c2185b;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .response-area {
+            margin-top: 15px;
+            padding: 15px;
+            background: #1e1e1e;
+            color: #4caf50;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            direction: ltr;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-code"></i> مستندات API</h1>
+            <p>API سایت غنچه لاله زار - نسخه 2.0</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="auth">احراز هویت</button>
+            <button class="nav-tab" data-section="posts">مطالب</button>
+            <button class="nav-tab" data-section="products">محصولات</button>
+            <button class="nav-tab" data-section="messages">پیام‌ها</button>
+            <button class="nav-tab" data-section="subscribers">خبرنامه</button>
+            <button class="nav-tab" data-section="media">رسانه</button>
+            <button class="nav-tab" data-section="settings">تنظیمات</button>
+            <button class="nav-tab" data-section="public">عمومی</button>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="auth" class="api-section">
+            <h2 class="section-title">احراز هویت</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/auth/login</span>
+                    <span class="endpoint-desc">ورود به سیستم</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترهای ورودی:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>username</td><td class="param-type">string</td><td>نام کاربری یا ایمیل</td></tr>
+                        <tr><td>password</td><td class="param-type">string</td><td>رمز عبور</td></tr>
+                    </table>
+                    <h4>نمونه درخواست:</h4>
+                    <div class="code-block">{
+  "username": "admin",
+  "password": "admin123"
+}</div>
+                    <h4>نمونه پاسخ:</h4>
+                    <div class="code-block">{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@ghoncheye.com",
+    "role": "administrator"
+  }
+}</div>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/auth/me</span>
+                    <span class="endpoint-desc">دریافت اطلاعات کاربر فعلی</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>هدرها:</h4>
+                    <div class="code-block">Authorization: Bearer &lt;token&gt;</div>
+                    <h4>نمونه پاسخ:</h4>
+                    <div class="code-block">{
+  "success": true,
+  "user": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@ghoncheye.com",
+    "first_name": "ادمین",
+    "last_name": "سیستم",
+    "role": "administrator"
+  }
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posts Section -->
+        <div id="posts" class="api-section" style="display:none;">
+            <h2 class="section-title">مدیریت مطالب</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/posts</span>
+                    <span class="endpoint-desc">لیست مطالب</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترهای Query:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>status</td><td class="param-type">string</td><td>فیلتر وضعیت (published, draft)</td></tr>
+                        <tr><td>category</td><td class="param-type">string</td><td>فیلتر دسته‌بندی</td></tr>
+                        <tr><td>search</td><td class="param-type">string</td><td>جستجو در عنوان و محتوا</td></tr>
+                        <tr><td>limit</td><td class="param-type">number</td><td>تعداد نتایج (پیش‌فرض: 50)</td></tr>
+                        <tr><td>offset</td><td class="param-type">number</td><td>شروع از</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/posts</span>
+                    <span class="endpoint-desc">ایجاد مطلب جدید</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترهای ورودی:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>title *</td><td class="param-type">string</td><td>عنوان مطلب</td></tr>
+                        <tr><td>content</td><td class="param-type">string</td><td>محتوای مطلب</td></tr>
+                        <tr><td>excerpt</td><td class="param-type">string</td><td>خلاصه</td></tr>
+                        <tr><td>category</td><td class="param-type">string</td><td>دسته‌بندی</td></tr>
+                        <tr><td>status</td><td class="param-type">string</td><td>وضعیت (draft, published)</td></tr>
+                        <tr><td>featured_image</td><td class="param-type">string</td><td>تصویر شاخص</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-put">PUT</span>
+                    <span class="endpoint-path">/api/posts/:id</span>
+                    <span class="endpoint-desc">ویرایش مطلب</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>همان پارامترهای ایجاد، همه اختیاری</p>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-delete">DELETE</span>
+                    <span class="endpoint-path">/api/posts/:id</span>
+                    <span class="endpoint-desc">حذف مطلب</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>مطلب با شناسه مورد نظر حذف می‌شود.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="products" class="api-section" style="display:none;">
+            <h2 class="section-title">مدیریت محصولات</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/products</span>
+                    <span class="endpoint-desc">لیست محصولات</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترهای Query:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>status</td><td class="param-type">string</td><td>فیلتر وضعیت</td></tr>
+                        <tr><td>category</td><td class="param-type">string</td><td>فیلتر دسته‌بندی</td></tr>
+                        <tr><td>featured</td><td class="param-type">boolean</td><td>فقط محصولات ویژه</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/products</span>
+                    <span class="endpoint-desc">ایجاد محصول</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترهای ورودی:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>name *</td><td class="param-type">string</td><td>نام محصول</td></tr>
+                        <tr><td>description</td><td class="param-type">string</td><td>توضیحات کامل</td></tr>
+                        <tr><td>short_description</td><td class="param-type">string</td><td>توضیح کوتاه</td></tr>
+                        <tr><td>category</td><td class="param-type">string</td><td>دسته‌بندی</td></tr>
+                        <tr><td>price</td><td class="param-type">string</td><td>قیمت</td></tr>
+                        <tr><td>features</td><td class="param-type">array</td><td>آرایه ویژگی‌ها</td></tr>
+                        <tr><td>image</td><td class="param-type">string</td><td>تصویر اصلی</td></tr>
+                        <tr><td>gallery</td><td class="param-type">array</td><td>گالری تصاویر</td></tr>
+                        <tr><td>featured</td><td class="param-type">boolean</td><td>محصول ویژه</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Section -->
+        <div id="messages" class="api-section" style="display:none;">
+            <h2 class="section-title">مدیریت پیام‌ها</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/messages</span>
+                    <span class="endpoint-desc">لیست پیام‌ها</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترهای Query:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>is_read</td><td class="param-type">boolean</td><td>فیلتر خوانده شده</td></tr>
+                        <tr><td>is_starred</td><td class="param-type">boolean</td><td>فیلتر ستاره‌دار</td></tr>
+                        <tr><td>search</td><td class="param-type">string</td><td>جستجو</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-put">PUT</span>
+                    <span class="endpoint-path">/api/messages/:id</span>
+                    <span class="endpoint-desc">بروزرسانی پیام</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترها:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>is_read</td><td class="param-type">boolean</td><td>وضعیت خواندن</td></tr>
+                        <tr><td>is_starred</td><td class="param-type">boolean</td><td>ستاره‌دار</td></tr>
+                        <tr><td>reply</td><td class="param-type">string</td><td>پاسخ</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscribers Section -->
+        <div id="subscribers" class="api-section" style="display:none;">
+            <h2 class="section-title">مدیریت خبرنامه</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/subscribers</span>
+                    <span class="endpoint-desc">لیست مشترکین</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>لیست تمام مشترکین خبرنامه با آمار</p>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/subscribers/export/csv</span>
+                    <span class="endpoint-desc">خروجی CSV</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>دانلود لیست مشترکین به صورت فایل CSV</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Media Section -->
+        <div id="media" class="api-section" style="display:none;">
+            <h2 class="section-title">مدیریت رسانه</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/media/upload</span>
+                    <span class="endpoint-desc">آپلود فایل</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Content-Type: multipart/form-data</p>
+                    <h4>پارامترها:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>file *</td><td class="param-type">File</td><td>فایل</td></tr>
+                        <tr><td>alt_text</td><td class="param-type">string</td><td>متن جایگزین</td></tr>
+                        <tr><td>caption</td><td class="param-type">string</td><td>توضیح</td></tr>
+                    </table>
+                    <p>فرمت‌های مجاز: jpg, png, gif, webp, pdf, doc, docx, mp4, webm</p>
+                    <p>حداکثر حجم: 50MB</p>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/media/upload-multiple</span>
+                    <span class="endpoint-desc">آپلود چند فایل</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>تا 10 فایل همزمان</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="api-section" style="display:none;">
+            <h2 class="section-title">تنظیمات سایت</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/settings</span>
+                    <span class="endpoint-desc">دریافت تنظیمات</span>
+                    <span class="auth-badge required">نیاز به توکن</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>تمام تنظیمات گروه‌بندی شده</p>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-put">PUT</span>
+                    <span class="endpoint-path">/api/settings</span>
+                    <span class="endpoint-desc">بروزرسانی تنظیمات</span>
+                    <span class="auth-badge required">نیاز به توکن (ادمین)</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>نمونه درخواست:</h4>
+                    <div class="code-block">{
+  "site_title": "غنچه لاله زار",
+  "contact_email": "info@example.com",
+  "contact_phone": "+98 912 212 7437"
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Public Section -->
+        <div id="public" class="api-section" style="display:none;">
+            <h2 class="section-title">API عمومی (بدون نیاز به احراز هویت)</h2>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/contact</span>
+                    <span class="endpoint-desc">ارسال فرم تماس</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترها:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>name</td><td class="param-type">string</td><td>نام</td></tr>
+                        <tr><td>email *</td><td class="param-type">string</td><td>ایمیل</td></tr>
+                        <tr><td>phone</td><td class="param-type">string</td><td>تلفن</td></tr>
+                        <tr><td>company</td><td class="param-type">string</td><td>شرکت</td></tr>
+                        <tr><td>country</td><td class="param-type">string</td><td>کشور</td></tr>
+                        <tr><td>message</td><td class="param-type">string</td><td>پیام</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/subscribe</span>
+                    <span class="endpoint-desc">عضویت در خبرنامه</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>پارامترها:</h4>
+                    <table class="param-table">
+                        <tr><th>نام</th><th>نوع</th><th>توضیحات</th></tr>
+                        <tr><td>email *</td><td class="param-type">string</td><td>ایمیل</td></tr>
+                        <tr><td>name</td><td class="param-type">string</td><td>نام</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/settings/public</span>
+                    <span class="endpoint-desc">تنظیمات عمومی</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>تنظیمات غیر حساس سایت برای استفاده در فرانت‌اند</p>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/health</span>
+                    <span class="endpoint-desc">بررسی سلامت سرور</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4>نمونه پاسخ:</h4>
+                    <div class="code-block">{
+  "status": "ok",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "uptime": 12345.67
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Test -->
+        <div class="test-api">
+            <h3><i class="fas fa-flask"></i> تست API</h3>
+            <select id="test-method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+            <input type="text" id="test-url" placeholder="/api/health" value="/api/health">
+            <input type="text" id="test-token" placeholder="توکن (اختیاری)">
+            <textarea id="test-body" rows="3" placeholder='{"key": "value"}'></textarea>
+            <button onclick="testAPI()">ارسال درخواست</button>
+            <div class="response-area" id="response-area">پاسخ در اینجا نمایش داده می‌شود...</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>مستندات API غنچه لاله زار - نسخه 2.0</p>
+        <p><a href="index.html">بازگشت به سایت</a> | <a href="admin/login.html">پنل مدیریت</a></p>
+    </footer>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.api-section').forEach(s => s.style.display = 'none');
+                
+                this.classList.add('active');
+                document.getElementById(this.dataset.section).style.display = 'block';
+            });
+        });
+
+        // Toggle endpoint details
+        function toggleEndpoint(header) {
+            const body = header.nextElementSibling;
+            body.classList.toggle('show');
+        }
+
+        // Test API
+        async function testAPI() {
+            const method = document.getElementById('test-method').value;
+            const url = document.getElementById('test-url').value;
+            const token = document.getElementById('test-token').value;
+            const bodyText = document.getElementById('test-body').value;
+            const responseArea = document.getElementById('response-area');
+
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (token) {
+                    options.headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                if (bodyText && (method === 'POST' || method === 'PUT')) {
+                    options.body = bodyText;
+                }
+
+                responseArea.textContent = 'در حال ارسال...';
+                responseArea.style.color = '#fff';
+
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                responseArea.textContent = JSON.stringify(data, null, 2);
+                responseArea.style.color = response.ok ? '#4caf50' : '#f44336';
+
+            } catch (error) {
+                responseArea.textContent = 'خطا: ' + error.message;
+                responseArea.style.color = '#f44336';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -346,10 +346,11 @@
         </div>
     </div>
     
+    <script src="api-client.js"></script>
     <script>
         // Check if already logged in
         document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('admin_token');
             if (token) {
                 window.location.href = 'dashboard.html';
             }
@@ -375,26 +376,35 @@
             btnLogin.innerHTML = '<span>در حال ورود...</span><span class="spinner"></span>';
             
             try {
-                // Simulate API call - for demo purposes
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Try real API first
+                let result;
+                try {
+                    result = await api.login(username, password);
+                } catch (apiError) {
+                    // Fallback to demo mode if API not available
+                    console.log('API not available, using demo mode');
+                    if (username === 'admin' && password === 'admin123') {
+                        result = {
+                            success: true,
+                            token: 'demo_token_' + Date.now(),
+                            user: {
+                                id: 1,
+                                username: 'admin',
+                                email: 'admin@ghoncheye.com',
+                                first_name: 'ادمین',
+                                last_name: 'سیستم',
+                                role: 'administrator'
+                            }
+                        };
+                        // Store demo data
+                        localStorage.setItem('admin_token', result.token);
+                        localStorage.setItem('admin_user', JSON.stringify(result.user));
+                    } else {
+                        throw new Error('نام کاربری یا رمز عبور اشتباه است');
+                    }
+                }
                 
-                // Demo validation
-                if (username === 'admin' && password === 'admin123') {
-                    // Generate demo token
-                    const token = 'demo_token_' + Date.now();
-                    const user = {
-                        id: 1,
-                        username: 'admin',
-                        email: 'admin@ghoncheye.com',
-                        first_name: 'ادمین',
-                        last_name: 'سیستم',
-                        role: 'administrator'
-                    };
-                    
-                    // Store in localStorage
-                    localStorage.setItem('auth_token', token);
-                    localStorage.setItem('user', JSON.stringify(user));
-                    
+                if (result.success) {
                     if (remember) {
                         localStorage.setItem('remember_me', 'true');
                     }
@@ -408,10 +418,10 @@
                         window.location.href = 'dashboard.html';
                     }, 1000);
                 } else {
-                    throw new Error('نام کاربری یا رمز عبور اشتباه است');
+                    throw new Error(result.error || 'خطا در ورود');
                 }
             } catch (error) {
-                errorDiv.querySelector('span').textContent = error.message;
+                errorDiv.querySelector('span').textContent = error.message || 'نام کاربری یا رمز عبور اشتباه است';
                 errorDiv.classList.add('show');
                 
                 btnLogin.disabled = false;
