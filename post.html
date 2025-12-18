@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وبلاگ | غنچه لاله زار</title>
+    <meta name="description" content="">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <a href="/">
+                        <i class="fas fa-rose"></i>
+                        <div class="logo-text">
+                            <h2>غنچه لاله زار</h2>
+                            <span class="logo-subtitle">Ghoncheye Lalehzar</span>
+                        </div>
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="/">خانه</a></li>
+                    <li><a href="/#products">محصولات</a></li>
+                    <li><a href="/blog.html" class="active">وبلاگ</a></li>
+                    <li><a href="/#contact">تماس با ما</a></li>
+                </ul>
+                <div class="header-contact">
+                    <a href="https://wa.me/989122127437" class="btn btn-whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>واتساپ</span>
+                    </a>
+                </div>
+                <div class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Single Post -->
+    <article class="single-post" style="margin-top: 80px;">
+        <div class="container">
+            <!-- Post Header -->
+            <header class="single-post-header" id="post-header">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>در حال بارگذاری...</span>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="single-post-featured" id="post-featured" style="display: none;"></div>
+
+            <!-- Post Content -->
+            <div class="single-post-content" id="single-post-content">
+                <!-- Content loaded via JS -->
+            </div>
+
+            <!-- Post Tags -->
+            <div class="post-tags" id="post-tags"></div>
+
+            <!-- Post Navigation -->
+            <nav class="post-navigation" id="post-navigation"></nav>
+
+            <!-- Author Box -->
+            <div class="author-box" id="author-box"></div>
+
+            <!-- Related Posts -->
+            <section class="related-posts" id="related-posts"></section>
+
+            <!-- Comments Section -->
+            <section class="comments-section">
+                <h3><i class="fas fa-comments"></i> دیدگاه‌ها <span id="comments-count"></span></h3>
+                
+                <!-- Comment Form -->
+                <div class="comment-form" id="comment-form">
+                    <h4>دیدگاه خود را بنویسید</h4>
+                    <p id="reply-to-name" style="color: #e91e63; margin-bottom: 15px;"></p>
+                    <form id="comment-form-element" onsubmit="submitComment(event)">
+                        <input type="hidden" id="reply-to" value="">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="comment-name">نام *</label>
+                                <input type="text" id="comment-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment-email">ایمیل *</label>
+                                <input type="email" id="comment-email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="comment-content">دیدگاه *</label>
+                            <textarea id="comment-content" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> ارسال دیدگاه
+                        </button>
+                        <button type="button" id="cancel-reply" class="btn btn-outline" style="display: none; margin-right: 10px;" onclick="cancelReply()">
+                            انصراف از پاسخ
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Comments List -->
+                <div class="comments-list" id="comments-list">
+                    <div class="loading">در حال بارگذاری دیدگاه‌ها...</div>
+                </div>
+            </section>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-rose"></i>
+                        <h3>غنچه لاله زار</h3>
+                        <span>Ghoncheye Lalehzar</span>
+                    </div>
+                    <p>تولیدکننده و صادرکننده مستقیم غنچه گل محمدی (Rosa Damascena) با کیفیت برتر از بهترین مزارع گل محمدی ایران.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>لینک‌های مفید</h4>
+                    <ul>
+                        <li><a href="/">صفحه اصلی</a></li>
+                        <li><a href="/#products">محصولات</a></li>
+                        <li><a href="/blog.html">وبلاگ</a></li>
+                        <li><a href="/#contact">تماس با ما</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تماس با ما</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> لاله زار کرمان، ایران</li>
+                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/989122127437">+98 912 212 7437</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; ۱۴۰۳ غنچه لاله زار. تمامی حقوق محفوظ است.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="blog-app.js"></script>
+</body>
+</html>

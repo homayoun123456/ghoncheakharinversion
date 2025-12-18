@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وبلاگ | غنچه لاله زار</title>
+    <meta name="description" content="آخرین مقالات و اخبار درباره غنچه گل محمدی و صادرات گل محمدی ایران">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <a href="/">
+                        <i class="fas fa-rose"></i>
+                        <div class="logo-text">
+                            <h2>غنچه لاله زار</h2>
+                            <span class="logo-subtitle">Ghoncheye Lalehzar</span>
+                        </div>
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="/">خانه</a></li>
+                    <li><a href="/#products">محصولات</a></li>
+                    <li><a href="/blog.html" class="active">وبلاگ</a></li>
+                    <li><a href="/#contact">تماس با ما</a></li>
+                </ul>
+                <div class="header-contact">
+                    <a href="https://wa.me/989122127437" class="btn btn-whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>واتساپ</span>
+                    </a>
+                </div>
+                <div class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Blog Hero -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1>وبلاگ غنچه لاله زار</h1>
+            <p>آخرین مقالات، اخبار و اطلاعات درباره گل محمدی</p>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="blog-content">
+        <div class="container">
+            <div class="blog-layout">
+                <!-- Main Content -->
+                <main class="blog-main">
+                    <!-- Search & Filters -->
+                    <div class="blog-filters">
+                        <div class="search-box">
+                            <input type="text" id="blog-search" placeholder="جستجو در مقالات...">
+                            <button onclick="searchPosts()"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="view-options">
+                            <button class="active" data-view="grid"><i class="fas fa-th-large"></i></button>
+                            <button data-view="list"><i class="fas fa-list"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Posts Grid -->
+                    <div class="posts-grid" id="posts-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>در حال بارگذاری...</span>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination"></div>
+                </main>
+
+                <!-- Sidebar -->
+                <aside class="blog-sidebar">
+                    <!-- Categories Widget -->
+                    <div class="sidebar-widget">
+                        <h3><i class="fas fa-folder"></i> دسته‌بندی‌ها</h3>
+                        <ul class="category-list" id="categories-list">
+                            <li class="loading">در حال بارگذاری...</li>
+                        </ul>
+                    </div>
+
+                    <!-- Recent Posts Widget -->
+                    <div class="sidebar-widget">
+                        <h3><i class="fas fa-clock"></i> آخرین نوشته‌ها</h3>
+                        <div class="recent-posts" id="recent-posts">
+                            <div class="loading">در حال بارگذاری...</div>
+                        </div>
+                    </div>
+
+                    <!-- Tags Widget -->
+                    <div class="sidebar-widget">
+                        <h3><i class="fas fa-tags"></i> برچسب‌ها</h3>
+                        <div class="tags-cloud" id="tags-cloud">
+                            <span class="loading">در حال بارگذاری...</span>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Widget -->
+                    <div class="sidebar-widget newsletter-widget">
+                        <h3><i class="fas fa-envelope"></i> خبرنامه</h3>
+                        <p>برای دریافت آخرین اخبار و مقالات عضو شوید</p>
+                        <form id="newsletter-form">
+                            <input type="email" placeholder="ایمیل شما...">
+                            <button type="submit" class="btn btn-primary">عضویت</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-rose"></i>
+                        <h3>غنچه لاله زار</h3>
+                        <span>Ghoncheye Lalehzar</span>
+                    </div>
+                    <p>تولیدکننده و صادرکننده مستقیم غنچه گل محمدی (Rosa Damascena) با کیفیت برتر از بهترین مزارع گل محمدی ایران.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>لینک‌های مفید</h4>
+                    <ul>
+                        <li><a href="/">صفحه اصلی</a></li>
+                        <li><a href="/#products">محصولات</a></li>
+                        <li><a href="/blog.html">وبلاگ</a></li>
+                        <li><a href="/#contact">تماس با ما</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تماس با ما</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> لاله زار کرمان، ایران</li>
+                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/989122127437">+98 912 212 7437</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; ۱۴۰۳ غنچه لاله زار. تمامی حقوق محفوظ است.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="blog-app.js"></script>
+</body>
+</html>
