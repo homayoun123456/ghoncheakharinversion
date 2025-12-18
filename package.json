@@ -1,11 +1,13 @@
 {
   "name": "ghoncheye-lalehzar-cms",
-  "version": "1.0.0",
-  "description": "Ghoncheye Lalehzar CMS - Persian Rose Buds Export Management System",
-  "main": "api-server.js",
+  "version": "2.0.0",
+  "description": "Ghoncheye Lalehzar CMS - WordPress-like Content Management System with Persian/RTL Support",
+  "main": "cms-api-server.js",
   "scripts": {
-    "start": "node api-server.js",
-    "dev": "node api-server.js",
+    "start": "node cms-api-server.js",
+    "dev": "node cms-api-server.js",
+    "api": "node cms-api-server.js",
+    "old-api": "node api-server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -18,10 +20,15 @@
   "author": "Ghoncheye Lalehzar",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.5.0",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3"
+    "multer": "^2.0.2",
+    "sharp": "^0.34.5",
+    "slugify": "^1.6.6",
+    "uuid": "^13.0.0"
   }
 }

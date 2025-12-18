@@ -1,0 +1,253 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2b$10$SlVZSvYznKIUgx5kIb8H.OPST9/PgBkqtQEKqVTQqO8m/.eHkK1Aq",
+      "email": "admin@ghoncheye.com",
+      "display_name": "مدیر سایت",
+      "first_name": "مدیر",
+      "last_name": "سایت",
+      "role": "administrator",
+      "bio": "مدیر سایت غنچه لاله زار - متخصص صادرات گل محمدی",
+      "avatar": null,
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "آشنایی با غنچه گل محمدی لاله زار کرمان",
+      "content": "<p>غنچه گل محمدی یکی از ارزشمندترین محصولات کشاورزی ایران است که از دیرباز در منطقه لاله زار کرمان کشت می‌شده است. این منطقه به دلیل ارتفاع بلند (۲۷۰۰ تا ۳۰۰۰ متر از سطح دریا) و آب و هوای خاص خود، بهترین شرایط را برای پرورش گل محمدی دارد.</p><h2>ویژگی‌های منحصر به فرد غنچه لاله زار</h2><p>غنچه‌های گل محمدی لاله زار به دلیل شرایط آب و هوایی خاص این منطقه، دارای ویژگی‌های منحصر به فردی هستند:</p><ul><li>غلظت بالای ترکیبات معطر</li><li>اندازه بزرگتر غنچه‌ها</li><li>رنگ طبیعی زیبا</li><li>عطر ماندگار</li></ul><h2>کاربردهای غنچه گل محمدی</h2><p>غنچه گل محمدی در صنایع مختلف کاربرد دارد:</p><ol><li>صنایع غذایی و دم‌نوش</li><li>صنعت عطرسازی</li><li>صنایع آرایشی و بهداشتی</li><li>طب سنتی</li></ol><blockquote>گل محمدی ایران از کیفیت بالایی برخوردار است و در سراسر جهان شناخته شده است.</blockquote><p>برای کسب اطلاعات بیشتر و سفارش محصول با ما تماس بگیرید.</p>",
+      "excerpt": "آشنایی با ویژگی‌های منحصر به فرد غنچه گل محمدی لاله زار کرمان و کاربردهای آن در صنایع مختلف",
+      "slug": "introduction-to-lalehzar-rose-buds",
+      "status": "published",
+      "author_id": 1,
+      "categories": [2],
+      "tags": [1, 2],
+      "featured_image": null,
+      "comment_status": "open",
+      "ping_status": "open",
+      "seo_title": "غنچه گل محمدی لاله زار کرمان | غنچه لاله زار",
+      "seo_description": "آشنایی با غنچه گل محمدی لاله زار کرمان - ویژگی‌های منحصر به فرد و کاربردهای این محصول ارزشمند",
+      "seo_keywords": "غنچه گل محمدی, لاله زار, کرمان, گل محمدی ایران",
+      "post_format": "standard",
+      "view_count": 150,
+      "comment_count": 2,
+      "published_at": "2024-03-01T10:00:00.000Z",
+      "created_at": "2024-03-01T09:00:00.000Z",
+      "updated_at": "2024-03-01T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "مزایای صادرات غنچه گل محمدی ایران به چین",
+      "content": "<p>بازار چین یکی از بزرگترین بازارهای مصرف محصولات گل محمدی در جهان است. صادرات غنچه گل محمدی به این کشور می‌تواند فرصت‌های اقتصادی خوبی را برای تولیدکنندگان ایرانی فراهم کند.</p><h2>چرا چین؟</h2><p>چین با جمعیت بیش از یک میلیارد نفر و علاقه‌مندی به محصولات طبیعی، بازار بزرگی برای غنچه گل محمدی محسوب می‌شود. این کشور سالانه میلیون‌ها دلار برای واردات این محصول هزینه می‌کند.</p><h2>مزایای صادرات به چین</h2><ul><li>بازار بزرگ و رو به رشد</li><li>تقاضای بالا برای محصولات طبیعی</li><li>قیمت‌های مناسب</li><li>امکان صادرات در حجم بالا</li></ul><p>ما در غنچه لاله زار آماده همکاری با واردکنندگان چینی هستیم و می‌توانیم محصولات با کیفیت و با قیمت رقابتی ارائه دهیم.</p>",
+      "excerpt": "بررسی مزایای صادرات غنچه گل محمدی ایران به بازار بزرگ چین و فرصت‌های موجود",
+      "slug": "export-benefits-to-china",
+      "status": "published",
+      "author_id": 1,
+      "categories": [3],
+      "tags": [3, 4],
+      "featured_image": null,
+      "comment_status": "open",
+      "ping_status": "open",
+      "seo_title": "صادرات غنچه گل محمدی به چین | غنچه لاله زار",
+      "seo_description": "مزایای صادرات غنچه گل محمدی ایران به بازار چین - فرصت‌های تجاری و نکات مهم",
+      "seo_keywords": "صادرات گل محمدی, بازار چین, غنچه گل محمدی, صادرات به چین",
+      "post_format": "standard",
+      "view_count": 89,
+      "comment_count": 0,
+      "published_at": "2024-03-15T08:00:00.000Z",
+      "created_at": "2024-03-15T07:00:00.000Z",
+      "updated_at": "2024-03-15T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "نحوه نگهداری و بسته‌بندی غنچه خشک گل محمدی",
+      "content": "<p>نگهداری صحیح غنچه خشک گل محمدی برای حفظ کیفیت و عطر آن بسیار مهم است. در این مقاله به بررسی روش‌های صحیح نگهداری و بسته‌بندی این محصول می‌پردازیم.</p><h2>شرایط نگهداری</h2><p>برای حفظ کیفیت غنچه خشک، رعایت نکات زیر ضروری است:</p><ul><li><strong>دما:</strong> نگهداری در دمای ۱۵ تا ۲۰ درجه سانتی‌گراد</li><li><strong>رطوبت:</strong> رطوبت محیط باید زیر ۶۰ درصد باشد</li><li><strong>نور:</strong> دور از نور مستقیم آفتاب</li><li><strong>تهویه:</strong> محیط باید تهویه مناسب داشته باشد</li></ul><h2>روش‌های بسته‌بندی</h2><p>انتخاب بسته‌بندی مناسب نقش مهمی در حفظ کیفیت محصول دارد:</p><ol><li><strong>بسته‌بندی وکیوم:</strong> بهترین روش برای نگهداری طولانی مدت</li><li><strong>کیسه‌های آلومینیومی:</strong> محافظت در برابر نور و رطوبت</li><li><strong>جعبه‌های مقوایی:</strong> برای حمل و نقل</li></ol><p>ما در غنچه لاله زار از بهترین روش‌های بسته‌بندی استفاده می‌کنیم تا محصول با کیفیت به دست مشتری برسد.</p>",
+      "excerpt": "راهنمای کامل نگهداری و بسته‌بندی صحیح غنچه خشک گل محمدی برای حفظ کیفیت و عطر",
+      "slug": "storage-and-packaging-guide",
+      "status": "published",
+      "author_id": 1,
+      "categories": [4],
+      "tags": [5, 6],
+      "featured_image": null,
+      "comment_status": "open",
+      "ping_status": "open",
+      "seo_title": "نگهداری و بسته‌بندی غنچه گل محمدی | غنچه لاله زار",
+      "seo_description": "راهنمای نگهداری و بسته‌بندی صحیح غنچه خشک گل محمدی - نکات مهم برای حفظ کیفیت",
+      "seo_keywords": "نگهداری گل محمدی, بسته‌بندی غنچه, غنچه خشک, انبارداری",
+      "post_format": "standard",
+      "view_count": 234,
+      "comment_count": 1,
+      "published_at": "2024-04-01T12:00:00.000Z",
+      "created_at": "2024-04-01T11:00:00.000Z",
+      "updated_at": "2024-04-01T12:00:00.000Z"
+    }
+  ],
+  "pages": [
+    {
+      "id": 1,
+      "title": "درباره ما",
+      "content": "<p>شرکت غنچه لاله زار با سابقه چندین ساله در زمینه تولید و صادرات غنچه گل محمدی فعالیت می‌کند. ما متعهد به ارائه محصولات با کیفیت به مشتریان داخلی و خارجی هستیم.</p>",
+      "slug": "about-us",
+      "status": "published",
+      "parent_id": null,
+      "template": "default",
+      "menu_order": 1,
+      "featured_image": null,
+      "seo_title": "درباره ما | غنچه لاله زار",
+      "seo_description": "درباره شرکت غنچه لاله زار - تولیدکننده و صادرکننده غنچه گل محمدی",
+      "seo_keywords": "",
+      "author_id": 1,
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "بدون دسته‌بندی",
+      "slug": "uncategorized",
+      "description": "پست‌های بدون دسته‌بندی",
+      "parent_id": null,
+      "count": 0,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "محصولات",
+      "slug": "products",
+      "description": "مقالات مربوط به محصولات گل محمدی",
+      "parent_id": null,
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "صادرات",
+      "slug": "export",
+      "description": "مقالات مربوط به صادرات و بازارهای جهانی",
+      "parent_id": null,
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "راهنما",
+      "slug": "guide",
+      "description": "راهنماها و آموزش‌ها",
+      "parent_id": null,
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "tags": [
+    {
+      "id": 1,
+      "name": "گل محمدی",
+      "slug": "rose",
+      "description": "",
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "لاله زار",
+      "slug": "lalehzar",
+      "description": "",
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "صادرات",
+      "slug": "export",
+      "description": "",
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "چین",
+      "slug": "china",
+      "description": "",
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "name": "بسته‌بندی",
+      "slug": "packaging",
+      "description": "",
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "name": "نگهداری",
+      "slug": "storage",
+      "description": "",
+      "count": 1,
+      "created_at": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "post_id": 1,
+      "parent_id": null,
+      "author_id": null,
+      "author_name": "علی احمدی",
+      "author_email": "ali@example.com",
+      "author_url": "",
+      "content": "مقاله بسیار مفیدی بود. ممنون از اطلاعات خوب درباره غنچه گل محمدی لاله زار.",
+      "status": "approved",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0",
+      "created_at": "2024-03-02T14:30:00.000Z"
+    },
+    {
+      "id": 2,
+      "post_id": 1,
+      "parent_id": 1,
+      "author_id": 1,
+      "author_name": "مدیر سایت",
+      "author_email": "admin@ghoncheye.com",
+      "author_url": "",
+      "content": "ممنون از نظر شما. خوشحالیم که مقاله مفید بوده است.",
+      "status": "approved",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0",
+      "created_at": "2024-03-02T15:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "post_id": 3,
+      "parent_id": null,
+      "author_id": null,
+      "author_name": "مریم کریمی",
+      "author_email": "maryam@example.com",
+      "author_url": "",
+      "content": "آیا می‌توانید در مورد مدت زمان نگهداری غنچه خشک بیشتر توضیح دهید؟",
+      "status": "approved",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0",
+      "created_at": "2024-04-02T10:00:00.000Z"
+    }
+  ],
+  "media": [],
+  "revisions": [],
+  "post_meta": [],
+  "options": [
+    { "name": "site_title", "value": "غنچه لاله زار" },
+    { "name": "site_tagline", "value": "تولید و صادرات غنچه گل محمدی" },
+    { "name": "posts_per_page", "value": "10" },
+    { "name": "default_category", "value": "1" },
+    { "name": "date_format", "value": "Y/m/d" },
+    { "name": "time_format", "value": "H:i" },
+    { "name": "comment_moderation", "value": "1" },
+    { "name": "comments_allowed", "value": "1" }
+  ]
+}
