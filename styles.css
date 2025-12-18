@@ -217,6 +217,25 @@ a:hover {
   color: var(--primary-color);
 }
 
+.nav-menu a.shop-link {
+  background: var(--gradient-primary);
+  color: white !important;
+  padding: 8px 18px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-menu a.shop-link:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3);
+}
+
+.nav-menu a.shop-link::after {
+  display: none;
+}
+
 .nav-menu a::after {
   content: '';
   position: absolute;
