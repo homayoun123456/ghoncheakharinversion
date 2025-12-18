@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقالات | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-rose"></i>
+                <div class="logo-text">
+                    <h2>غنچه لاله زار</h2>
+                    <span>پنل مدیریت</span>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-home"></i><span>داشبورد</span></a></li>
+                <li class="active"><a href="posts.html"><i class="fas fa-newspaper"></i><span>مقالات</span></a></li>
+                <li><a href="pages.html"><i class="fas fa-file-alt"></i><span>صفحات</span></a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i><span>محصولات</span></a></li>
+                <li><a href="media.html"><i class="fas fa-images"></i><span>رسانه‌ها</span></a></li>
+                <li><a href="messages.html"><i class="fas fa-envelope"></i><span>پیام‌ها</span><span class="badge">5</span></a></li>
+                <li><a href="subscribers.html"><i class="fas fa-users"></i><span>مشترکین خبرنامه</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i><span>تنظیمات</span></a></li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i><span>مشاهده سایت</span></a>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-right">
+                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">مدیریت مقالات</h1>
+            </div>
+            <div class="header-left">
+                <div class="user-dropdown">
+                    <button class="user-btn" id="user-btn">
+                        <div class="user-avatar"><i class="fas fa-user"></i></div>
+                        <span class="user-name" id="user-name">ادمین</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-circle"></i> پروفایل</a>
+                        <a href="settings.html"><i class="fas fa-cog"></i> تنظیمات</a>
+                        <hr>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <!-- Page Header -->
+            <div class="page-header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="جستجو در مقالات...">
+                </div>
+                <button class="btn btn-primary" onclick="openModal('add')">
+                    <i class="fas fa-plus"></i>
+                    مقاله جدید
+                </button>
+            </div>
+            
+            <!-- Posts Table -->
+            <div class="table-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-newspaper"></i> لیست مقالات</h3>
+                    <div class="filter-group">
+                        <select id="status-filter" class="filter-select">
+                            <option value="">همه وضعیت‌ها</option>
+                            <option value="published">منتشر شده</option>
+                            <option value="draft">پیش‌نویس</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all"></th>
+                                <th>عنوان</th>
+                                <th>دسته‌بندی</th>
+                                <th>نویسنده</th>
+                                <th>تاریخ</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="posts-table-body">
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>مزایای غنچه گل محمدی در صنعت عطرسازی</td>
+                                <td>مقالات</td>
+                                <td>ادمین</td>
+                                <td>1403/09/20</td>
+                                <td><span class="status published">منتشر شده</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editPost(1)" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" onclick="deletePost(1)" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>فرآیند برداشت و خشک کردن غنچه</td>
+                                <td>آموزش</td>
+                                <td>ادمین</td>
+                                <td>1403/09/18</td>
+                                <td><span class="status published">منتشر شده</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editPost(2)" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" onclick="deletePost(2)" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>صادرات گل محمدی به کشور چین</td>
+                                <td>صادرات</td>
+                                <td>ادمین</td>
+                                <td>1403/09/15</td>
+                                <td><span class="status draft">پیش‌نویس</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editPost(3)" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" onclick="deletePost(3)" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>خواص درمانی گل محمدی</td>
+                                <td>سلامت</td>
+                                <td>ادمین</td>
+                                <td>1403/09/10</td>
+                                <td><span class="status published">منتشر شده</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editPost(4)" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" onclick="deletePost(4)" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <a href="#"><i class="fas fa-chevron-right"></i></a>
+                <span class="active">1</span>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#"><i class="fas fa-chevron-left"></i></a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal -->
+    <div class="modal" id="post-modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="modal-title">افزودن مقاله جدید</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="post-form">
+                    <input type="hidden" id="post-id">
+                    <div class="form-group">
+                        <label for="post-title">عنوان مقاله *</label>
+                        <input type="text" id="post-title" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="post-category">دسته‌بندی</label>
+                            <select id="post-category">
+                                <option value="articles">مقالات</option>
+                                <option value="education">آموزش</option>
+                                <option value="export">صادرات</option>
+                                <option value="health">سلامت</option>
+                                <option value="news">اخبار</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-status">وضعیت</label>
+                            <select id="post-status">
+                                <option value="draft">پیش‌نویس</option>
+                                <option value="published">منتشر شده</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-excerpt">خلاصه</label>
+                        <textarea id="post-excerpt" rows="3" placeholder="خلاصه کوتاه از مقاله..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-content">محتوا</label>
+                        <textarea id="post-content" rows="10" placeholder="محتوای کامل مقاله..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-image">تصویر شاخص</label>
+                        <input type="file" id="post-image" accept="image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">انصراف</button>
+                <button class="btn btn-primary" onclick="savePost()">
+                    <i class="fas fa-save"></i>
+                    ذخیره
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .page-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-lighter);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+    
+    <script src="admin.js"></script>
+    <script>
+        // Posts Management
+        function openModal(action, id = null) {
+            const modal = document.getElementById('post-modal');
+            const modalTitle = document.getElementById('modal-title');
+            
+            if (action === 'add') {
+                modalTitle.textContent = 'افزودن مقاله جدید';
+                document.getElementById('post-form').reset();
+                document.getElementById('post-id').value = '';
+            } else if (action === 'edit') {
+                modalTitle.textContent = 'ویرایش مقاله';
+                // Load post data here
+            }
+            
+            modal.classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('post-modal').classList.remove('show');
+        }
+        
+        function savePost() {
+            const form = document.getElementById('post-form');
+            const title = document.getElementById('post-title').value;
+            
+            if (!title.trim()) {
+                showNotification('عنوان مقاله الزامی است', 'error');
+                return;
+            }
+            
+            // Save post
+            showNotification('مقاله با موفقیت ذخیره شد', 'success');
+            closeModal();
+        }
+        
+        function editPost(id) {
+            openModal('edit', id);
+        }
+        
+        function deletePost(id) {
+            if (confirm('آیا از حذف این مقاله اطمینان دارید؟')) {
+                showNotification('مقاله با موفقیت حذف شد', 'success');
+            }
+        }
+        
+        // Select all checkbox
+        document.getElementById('select-all').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('#posts-table-body input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+        
+        // Search
+        document.getElementById('search-input').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#posts-table-body tr');
+            rows.forEach(row => {
+                const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                row.style.display = title.includes(filter) ? '' : 'none';
+            });
+        });
+        
+        // Close modal on click outside
+        document.getElementById('post-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>

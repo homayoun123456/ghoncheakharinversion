@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیام‌ها | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-rose"></i>
+                <div class="logo-text">
+                    <h2>غنچه لاله زار</h2>
+                    <span>پنل مدیریت</span>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-home"></i><span>داشبورد</span></a></li>
+                <li><a href="posts.html"><i class="fas fa-newspaper"></i><span>مقالات</span></a></li>
+                <li><a href="pages.html"><i class="fas fa-file-alt"></i><span>صفحات</span></a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i><span>محصولات</span></a></li>
+                <li><a href="media.html"><i class="fas fa-images"></i><span>رسانه‌ها</span></a></li>
+                <li class="active"><a href="messages.html"><i class="fas fa-envelope"></i><span>پیام‌ها</span><span class="badge">5</span></a></li>
+                <li><a href="subscribers.html"><i class="fas fa-users"></i><span>مشترکین خبرنامه</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i><span>تنظیمات</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i><span>مشاهده سایت</span></a>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-right">
+                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">پیام‌های دریافتی</h1>
+            </div>
+            <div class="header-left">
+                <div class="user-dropdown">
+                    <button class="user-btn" id="user-btn">
+                        <div class="user-avatar"><i class="fas fa-user"></i></div>
+                        <span class="user-name" id="user-name">ادمین</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-circle"></i> پروفایل</a>
+                        <hr>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <div class="messages-container">
+                <!-- Messages List -->
+                <div class="messages-list-panel">
+                    <div class="messages-header">
+                        <h3>صندوق ورودی</h3>
+                        <span class="unread-count">5 خوانده نشده</span>
+                    </div>
+                    <div class="messages-list" id="messages-list">
+                        <div class="message-item unread active" data-id="1">
+                            <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div class="message-preview">
+                                <div class="message-header-row">
+                                    <h4>محمد رضایی</h4>
+                                    <span class="message-time">5 دقیقه پیش</span>
+                                </div>
+                                <p class="message-subject">درخواست اطلاعات قیمت</p>
+                                <p class="message-snippet">سلام، من علاقه‌مند به خرید عمده غنچه گل محمدی برای صادرات به ترکیه هستم...</p>
+                            </div>
+                        </div>
+                        <div class="message-item unread" data-id="2">
+                            <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div class="message-preview">
+                                <div class="message-header-row">
+                                    <h4>علی احمدی</h4>
+                                    <span class="message-time">2 ساعت پیش</span>
+                                </div>
+                                <p class="message-subject">سفارش عمده</p>
+                                <p class="message-snippet">سلام، می‌خواستم در مورد سفارش عمده صحبت کنم...</p>
+                            </div>
+                        </div>
+                        <div class="message-item" data-id="3">
+                            <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div class="message-preview">
+                                <div class="message-header-row">
+                                    <h4>Zhang Wei</h4>
+                                    <span class="message-time">1 روز پیش</span>
+                                </div>
+                                <p class="message-subject">Bulk Order Inquiry</p>
+                                <p class="message-snippet">We are interested in bulk orders for our tea company...</p>
+                            </div>
+                        </div>
+                        <div class="message-item" data-id="4">
+                            <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div class="message-preview">
+                                <div class="message-header-row">
+                                    <h4>فاطمه کریمی</h4>
+                                    <span class="message-time">2 روز پیش</span>
+                                </div>
+                                <p class="message-subject">سوال در مورد گواهینامه‌ها</p>
+                                <p class="message-snippet">با سلام، آیا محصولات شما دارای گواهینامه ارگانیک هستند؟</p>
+                            </div>
+                        </div>
+                        <div class="message-item" data-id="5">
+                            <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div class="message-preview">
+                                <div class="message-header-row">
+                                    <h4>Ahmed Hassan</h4>
+                                    <span class="message-time">3 روز پیش</span>
+                                </div>
+                                <p class="message-subject">Export to UAE</p>
+                                <p class="message-snippet">We are looking for quality rose products for our perfume factory...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message Detail -->
+                <div class="message-detail-panel" id="message-detail">
+                    <div class="message-detail-header">
+                        <div class="sender-info">
+                            <div class="sender-avatar"><i class="fas fa-user"></i></div>
+                            <div class="sender-details">
+                                <h3>محمد رضایی</h3>
+                                <p>mohammad.rezaei@example.com</p>
+                            </div>
+                        </div>
+                        <div class="message-actions">
+                            <button class="btn-icon" title="پاسخ"><i class="fas fa-reply"></i></button>
+                            <button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="message-detail-body">
+                        <div class="message-meta">
+                            <span class="message-date"><i class="fas fa-calendar"></i> 1403/09/27 - 14:35</span>
+                            <span class="message-phone"><i class="fas fa-phone"></i> +98 912 345 6789</span>
+                        </div>
+                        <h2 class="message-title">درخواست اطلاعات قیمت</h2>
+                        <div class="message-content">
+                            <p>سلام،</p>
+                            <p>من علاقه‌مند به خرید عمده غنچه گل محمدی برای صادرات به ترکیه هستم. لطفاً اطلاعات زیر را برای من ارسال کنید:</p>
+                            <ul>
+                                <li>لیست قیمت محصولات</li>
+                                <li>حداقل مقدار سفارش</li>
+                                <li>شرایط پرداخت و ارسال</li>
+                                <li>گواهینامه‌های موجود</li>
+                            </ul>
+                            <p>با تشکر،</p>
+                            <p>محمد رضایی</p>
+                            <p>شرکت بازرگانی رضایی</p>
+                        </div>
+                    </div>
+                    <div class="message-reply-section">
+                        <h4>پاسخ به پیام</h4>
+                        <textarea placeholder="متن پاسخ را وارد کنید..." rows="5"></textarea>
+                        <div class="reply-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                                ارسال پاسخ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <style>
+        .messages-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 25px;
+            min-height: calc(100vh - 170px);
+        }
+        
+        .messages-list-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .messages-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .messages-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .unread-count {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .messages-list {
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+        }
+        
+        .message-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .message-item:hover {
+            background: var(--light-color);
+        }
+        
+        .message-item.active {
+            background: rgba(194, 24, 91, 0.1);
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .message-item.unread .message-subject {
+            font-weight: 600;
+        }
+        
+        .message-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+        
+        .message-preview {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .message-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .message-header-row h4 {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-lighter);
+        }
+        
+        .message-subject {
+            font-size: 0.9rem;
+            margin: 0 0 5px;
+            color: var(--text-dark);
+        }
+        
+        .message-snippet {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .message-detail-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .message-detail-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sender-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sender-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .sender-details h3 {
+            margin: 0 0 5px;
+            font-size: 1.1rem;
+        }
+        
+        .sender-details p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .message-detail-body {
+            padding: 25px;
+        }
+        
+        .message-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .message-meta span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .message-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .message-content {
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+        
+        .message-content ul {
+            margin: 15px 0;
+            padding-right: 25px;
+        }
+        
+        .message-content li {
+            margin-bottom: 8px;
+        }
+        
+        .message-reply-section {
+            padding: 25px;
+            border-top: 1px solid var(--border-color);
+            background: var(--light-color);
+        }
+        
+        .message-reply-section h4 {
+            margin: 0 0 15px;
+            font-size: 1rem;
+        }
+        
+        .message-reply-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+        
+        .message-reply-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .reply-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        @media (max-width: 992px) {
+            .messages-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .message-detail-panel {
+                display: none;
+            }
+            
+            .message-detail-panel.show {
+                display: block;
+            }
+        }
+    </style>
+    
+    <script src="admin.js"></script>
+    <script>
+        // Message selection
+        document.querySelectorAll('.message-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.message-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                this.classList.remove('unread');
+                // Load message detail
+            });
+        });
+    </script>
+</body>
+</html>

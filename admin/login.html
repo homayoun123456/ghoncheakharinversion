@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود به پنل مدیریت | غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            min-height: 500px;
+        }
+        
+        .login-image {
+            flex: 1;
+            background: linear-gradient(135deg, #c2185b 0%, #8e24aa 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+        
+        .login-image i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+        
+        .login-image h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-image p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .login-form-container {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .login-header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #c2185b;
+            box-shadow: 0 0 0 4px rgba(194, 24, 91, 0.15);
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            accent-color: #c2185b;
+        }
+        
+        .forgot-password {
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #c2185b 0%, #8e24aa 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(194, 24, 91, 0.4);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .demo-credentials {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .demo-credentials p {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .demo-credentials code {
+            background: #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-message.show {
+            display: flex;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .back-link a:hover {
+            color: #c2185b;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+            
+            .login-image {
+                padding: 30px;
+            }
+            
+            .login-image i {
+                font-size: 3rem;
+            }
+            
+            .login-image h2 {
+                font-size: 1.5rem;
+            }
+            
+            .login-form-container {
+                padding: 30px 25px;
+            }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-image">
+            <i class="fas fa-rose"></i>
+            <h2>غنچه لاله زار</h2>
+            <p>پنل مدیریت محتوا</p>
+        </div>
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1>ورود به پنل مدیریت</h1>
+                <p>لطفاً اطلاعات ورود خود را وارد کنید</p>
+            </div>
+            
+            <div class="error-message" id="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span></span>
+            </div>
+            
+            <div class="success-message" id="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span></span>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">نام کاربری</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="نام کاربری خود را وارد کنید" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">رمز عبور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="رمز عبور خود را وارد کنید" required>
+                    </div>
+                </div>
+                
+                <div class="remember-forgot">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span>مرا به خاطر بسپار</span>
+                    </label>
+                    <a href="#" class="forgot-password">فراموشی رمز عبور</a>
+                </div>
+                
+                <button type="submit" class="btn-login" id="btn-login">
+                    <span>ورود به پنل</span>
+                </button>
+            </form>
+            
+            <div class="demo-credentials">
+                <p><strong>اطلاعات ورود نمونه:</strong></p>
+                <p>نام کاربری: <code>admin</code> | رمز عبور: <code>admin123</code></p>
+            </div>
+            
+            <div class="back-link">
+                <a href="../index.html"><i class="fas fa-arrow-right"></i> بازگشت به سایت</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+        
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const btnLogin = document.getElementById('btn-login');
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            
+            // Hide messages
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+            
+            // Show loading
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<span>در حال ورود...</span><span class="spinner"></span>';
+            
+            try {
+                // Simulate API call - for demo purposes
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Demo validation
+                if (username === 'admin' && password === 'admin123') {
+                    // Generate demo token
+                    const token = 'demo_token_' + Date.now();
+                    const user = {
+                        id: 1,
+                        username: 'admin',
+                        email: 'admin@ghoncheye.com',
+                        first_name: 'ادمین',
+                        last_name: 'سیستم',
+                        role: 'administrator'
+                    };
+                    
+                    // Store in localStorage
+                    localStorage.setItem('auth_token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    if (remember) {
+                        localStorage.setItem('remember_me', 'true');
+                    }
+                    
+                    // Show success
+                    successDiv.querySelector('span').textContent = 'ورود موفق! در حال انتقال...';
+                    successDiv.classList.add('show');
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    throw new Error('نام کاربری یا رمز عبور اشتباه است');
+                }
+            } catch (error) {
+                errorDiv.querySelector('span').textContent = error.message;
+                errorDiv.classList.add('show');
+                
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = '<span>ورود به پنل</span>';
+            }
+        });
+    </script>
+</body>
+</html>

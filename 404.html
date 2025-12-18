@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>۴۰۴ - صفحه یافت نشد | غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .error-icon {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #c2185b 0%, #8e24aa 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .error-icon i {
+            font-size: 5rem;
+            color: white;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            color: #c2185b;
+            line-height: 1;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 rgba(194, 24, 91, 0.2);
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .error-message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #c2185b 0%, #8e24aa 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(194, 24, 91, 0.4);
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #c2185b;
+            border: 2px solid #c2185b;
+        }
+        
+        .btn-outline:hover {
+            background: #c2185b;
+            color: white;
+        }
+        
+        .suggestions {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .suggestions h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .suggestions-list {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .suggestion-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            text-decoration: none;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .suggestion-link:hover {
+            color: #c2185b;
+            background: #fce4ec;
+        }
+        
+        .suggestion-link i {
+            color: #c2185b;
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+            
+            .error-icon {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .error-icon i {
+                font-size: 3.5rem;
+            }
+            
+            .error-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="fas fa-rose"></i>
+        </div>
+        <div class="error-code">۴۰۴</div>
+        <h1 class="error-title">صفحه مورد نظر یافت نشد</h1>
+        <p class="error-message">
+            متأسفانه صفحه‌ای که به دنبال آن هستید وجود ندارد یا منتقل شده است.
+            <br>لطفاً آدرس را بررسی کنید یا از لینک‌های زیر استفاده کنید.
+        </p>
+        <div class="error-actions">
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home"></i>
+                صفحه اصلی
+            </a>
+            <a href="index.html#contact" class="btn btn-outline">
+                <i class="fas fa-envelope"></i>
+                تماس با ما
+            </a>
+        </div>
+        
+        <div class="suggestions">
+            <h3>صفحات پیشنهادی:</h3>
+            <div class="suggestions-list">
+                <a href="index.html#products" class="suggestion-link">
+                    <i class="fas fa-box"></i>
+                    محصولات
+                </a>
+                <a href="index.html#quality" class="suggestion-link">
+                    <i class="fas fa-certificate"></i>
+                    کیفیت
+                </a>
+                <a href="index.html#certificates" class="suggestion-link">
+                    <i class="fas fa-award"></i>
+                    گواهینامه‌ها
+                </a>
+                <a href="index.html#needs-form" class="suggestion-link">
+                    <i class="fas fa-file-alt"></i>
+                    فرم نیازسنجی
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
