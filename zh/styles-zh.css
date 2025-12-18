@@ -1,0 +1,86 @@
+/* Chinese Version Styles */
+
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    direction: ltr;
+}
+
+/* Navigation for LTR */
+.nav-menu { margin-right: 0; margin-left: auto; }
+.header-contact { margin-left: 0; margin-right: auto; }
+.hero-image { right: auto; left: 0; }
+.features-list li { text-align: left; }
+.footer-section ul li i { margin-right: 0; margin-left: 10px; }
+
+/* Statistics Section */
+.statistics {
+    background: linear-gradient(135deg, #c2185b 0%, #8e24aa 100%);
+    padding: 60px 0;
+    color: white;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.stat-item { padding: 20px; }
+.stat-number { font-size: 3.5rem; font-weight: 700; margin-bottom: 10px; }
+.stat-number::after { content: '+'; }
+.stat-label { font-size: 1.1rem; opacity: 0.9; }
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-screen.hidden { opacity: 0; visibility: hidden; }
+.loader { text-align: center; }
+.loader i { font-size: 4rem; color: #c2185b; animation: pulse 1.5s ease-in-out infinite; }
+.loader span { display: block; margin-top: 15px; color: #666; font-size: 1.1rem; }
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #c2185b, #8e24aa);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 5px 20px rgba(194, 24, 91, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.back-to-top.show { display: flex; }
+.back-to-top:hover { transform: translateY(-5px); }
+
+@media (max-width: 768px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-number { font-size: 2.5rem; }
+}

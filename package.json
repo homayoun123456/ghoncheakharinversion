@@ -1,27 +1,39 @@
 {
   "name": "ghoncheye-lalehzar-cms",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Ghoncheye Lalehzar CMS - Persian Rose Buds Export Management System",
-  "main": "api-server.js",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node api-server.js",
-    "dev": "node api-server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "backend": "cd backend && npm start",
+    "install-backend": "cd backend && npm install",
+    "init-db": "node backend/database.js"
   },
   "keywords": [
     "cms",
     "admin",
     "lalehzar",
     "rose",
-    "export"
+    "export",
+    "nodejs",
+    "express"
   ],
   "author": "Ghoncheye Lalehzar",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.21.0",
     "cors": "^2.8.5",
-    "express-session": "^1.17.3",
+    "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.5.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

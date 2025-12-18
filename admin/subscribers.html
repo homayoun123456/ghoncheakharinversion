@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشترکین خبرنامه | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-rose"></i>
+                <div class="logo-text">
+                    <h2>غنچه لاله زار</h2>
+                    <span>پنل مدیریت</span>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-home"></i><span>داشبورد</span></a></li>
+                <li><a href="posts.html"><i class="fas fa-newspaper"></i><span>مقالات</span></a></li>
+                <li><a href="pages.html"><i class="fas fa-file-alt"></i><span>صفحات</span></a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i><span>محصولات</span></a></li>
+                <li><a href="media.html"><i class="fas fa-images"></i><span>رسانه‌ها</span></a></li>
+                <li><a href="messages.html"><i class="fas fa-envelope"></i><span>پیام‌ها</span><span class="badge">5</span></a></li>
+                <li class="active"><a href="subscribers.html"><i class="fas fa-users"></i><span>مشترکین خبرنامه</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i><span>تنظیمات</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i><span>مشاهده سایت</span></a>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-right">
+                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">مشترکین خبرنامه</h1>
+            </div>
+            <div class="header-left">
+                <div class="user-dropdown">
+                    <button class="user-btn" id="user-btn">
+                        <div class="user-avatar"><i class="fas fa-user"></i></div>
+                        <span class="user-name" id="user-name">ادمین</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <!-- Stats -->
+            <div class="stats-grid" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>156</h3>
+                        <p>کل مشترکین</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-user-plus"></i></div>
+                    <div class="stat-info">
+                        <h3>24</h3>
+                        <p>این ماه</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fas fa-paper-plane"></i></div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>ایمیل ارسالی</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="page-header-actions" style="margin-bottom: 25px;">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="جستجو در مشترکین...">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        خروجی CSV
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        ارسال خبرنامه
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Table -->
+            <div class="table-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> لیست مشترکین</h3>
+                </div>
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>ایمیل</th>
+                                <th>تاریخ عضویت</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>john@example.com</td>
+                                <td>1403/09/20</td>
+                                <td><span class="status published">فعال</span></td>
+                                <td><button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>sarah@example.com</td>
+                                <td>1403/09/18</td>
+                                <td><span class="status published">فعال</span></td>
+                                <td><button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>wang@example.cn</td>
+                                <td>1403/09/15</td>
+                                <td><span class="status published">فعال</span></td>
+                                <td><button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>ahmed@example.ae</td>
+                                <td>1403/09/10</td>
+                                <td><span class="status published">فعال</span></td>
+                                <td><button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>ali@example.ir</td>
+                                <td>1403/09/05</td>
+                                <td><span class="status draft">غیرفعال</span></td>
+                                <td><button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <a href="#"><i class="fas fa-chevron-right"></i></a>
+                <span class="active">1</span>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#"><i class="fas fa-chevron-left"></i></a>
+            </div>
+        </div>
+    </main>
+    
+    <style>
+        .page-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-lighter);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+    </style>
+    
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-rose"></i>
+                <div class="logo-text">
+                    <h2>غنچه لاله زار</h2>
+                    <span>پنل مدیریت</span>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a href="dashboard.html">
+                        <i class="fas fa-home"></i>
+                        <span>داشبورد</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="posts.html">
+                        <i class="fas fa-newspaper"></i>
+                        <span>مقالات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="pages.html">
+                        <i class="fas fa-file-alt"></i>
+                        <span>صفحات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="products.html">
+                        <i class="fas fa-box"></i>
+                        <span>محصولات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="media.html">
+                        <i class="fas fa-images"></i>
+                        <span>رسانه‌ها</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="messages.html">
+                        <i class="fas fa-envelope"></i>
+                        <span>پیام‌ها</span>
+                        <span class="badge">5</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="subscribers.html">
+                        <i class="fas fa-users"></i>
+                        <span>مشترکین خبرنامه</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>تنظیمات</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../index.html" target="_blank">
+                <i class="fas fa-external-link-alt"></i>
+                <span>مشاهده سایت</span>
+            </a>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-right">
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">داشبورد</h1>
+            </div>
+            
+            <div class="header-left">
+                <div class="notifications">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="user-dropdown">
+                    <button class="user-btn" id="user-btn">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="user-name" id="user-name">ادمین</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-circle"></i> پروفایل</a>
+                        <a href="settings.html"><i class="fas fa-cog"></i> تنظیمات</a>
+                        <hr>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="posts-count">12</h3>
+                        <p>مقالات</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="products-count">6</h3>
+                        <p>محصولات</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="messages-count">28</h3>
+                        <p>پیام‌ها</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="subscribers-count">156</h3>
+                        <p>مشترکین</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>بازدید سایت</h3>
+                        <select class="filter-select">
+                            <option>۷ روز اخیر</option>
+                            <option>۳۰ روز اخیر</option>
+                            <option>۳ ماه اخیر</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="visits-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card small">
+                    <div class="card-header">
+                        <h3>منبع ترافیک</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="traffic-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity Row -->
+            <div class="activity-row">
+                <!-- Recent Messages -->
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-envelope"></i> پیام‌های اخیر</h3>
+                        <a href="messages.html" class="view-all">مشاهده همه</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="message-list">
+                            <div class="message-item unread">
+                                <div class="message-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="message-content">
+                                    <h4>محمد رضایی</h4>
+                                    <p>درخواست اطلاعات قیمت برای صادرات به ترکیه...</p>
+                                    <span class="message-time">5 دقیقه پیش</span>
+                                </div>
+                            </div>
+                            <div class="message-item unread">
+                                <div class="message-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="message-content">
+                                    <h4>علی احمدی</h4>
+                                    <p>سلام، می‌خواستم در مورد سفارش عمده...</p>
+                                    <span class="message-time">2 ساعت پیش</span>
+                                </div>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="message-content">
+                                    <h4>Zhang Wei</h4>
+                                    <p>We are interested in bulk orders for...</p>
+                                    <span class="message-time">1 روز پیش</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bolt"></i> دسترسی سریع</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <a href="posts.html?action=new" class="quick-action">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>مقاله جدید</span>
+                            </a>
+                            <a href="products.html?action=new" class="quick-action">
+                                <i class="fas fa-box"></i>
+                                <span>محصول جدید</span>
+                            </a>
+                            <a href="media.html" class="quick-action">
+                                <i class="fas fa-upload"></i>
+                                <span>آپلود رسانه</span>
+                            </a>
+                            <a href="settings.html" class="quick-action">
+                                <i class="fas fa-cog"></i>
+                                <span>تنظیمات</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Posts -->
+            <div class="table-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-newspaper"></i> آخرین مقالات</h3>
+                    <a href="posts.html" class="view-all">مشاهده همه</a>
+                </div>
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>عنوان</th>
+                                <th>نویسنده</th>
+                                <th>دسته‌بندی</th>
+                                <th>تاریخ</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>مزایای غنچه گل محمدی در صنعت عطرسازی</td>
+                                <td>ادمین</td>
+                                <td>مقالات</td>
+                                <td>1403/09/20</td>
+                                <td><span class="status published">منتشر شده</span></td>
+                                <td>
+                                    <button class="btn-icon" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>فرآیند برداشت و خشک کردن غنچه</td>
+                                <td>ادمین</td>
+                                <td>آموزش</td>
+                                <td>1403/09/18</td>
+                                <td><span class="status published">منتشر شده</span></td>
+                                <td>
+                                    <button class="btn-icon" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>صادرات گل محمدی به کشور چین</td>
+                                <td>ادمین</td>
+                                <td>صادرات</td>
+                                <td>1403/09/15</td>
+                                <td><span class="status draft">پیش‌نویس</span></td>
+                                <td>
+                                    <button class="btn-icon" title="ویرایش"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
