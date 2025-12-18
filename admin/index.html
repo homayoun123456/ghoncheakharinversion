@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت | غنچه لاله‌زار</title>
+    <script>
+        // Redirect to login or plugins page
+        const token = localStorage.getItem('token');
+        if (token) {
+            window.location.href = 'plugins.html';
+        } else {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <p>در حال انتقال...</p>
+</body>
+</html>

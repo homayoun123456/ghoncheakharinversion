@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود | غنچه لاله‌زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #c2185b;
+            --primary-dark: #8e0038;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --bg-light: #f5f5f5;
+            --border-light: #e0e0e0;
+            --border-radius: 12px;
+            --shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .login-header h1 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        
+        .login-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-login:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .demo-info {
+            margin-top: 25px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .demo-info p {
+            color: #1565c0;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .demo-info code {
+            background: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-spa"></i>
+            <h1>غنچه لاله‌زار</h1>
+            <p>وارد پنل مدیریت شوید</p>
+        </div>
+        
+        <div class="error-message" id="error-message"></div>
+        
+        <form id="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>نام کاربری</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" required placeholder="نام کاربری">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>رمز عبور</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" required placeholder="رمز عبور">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-login" id="login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                ورود
+            </button>
+        </form>
+        
+        <div class="demo-info">
+            <p><strong>اطلاعات ورود:</strong></p>
+            <p>نام کاربری: <code>admin</code></p>
+            <p>رمز عبور: <code>admin123</code></p>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = window.location.port === '3001' ? '/api' : 'http://localhost:3001/api';
+        
+        // Check if already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            window.location.href = 'plugins.html';
+        }
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+            const errorDiv = document.getElementById('error-message');
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> در حال ورود...';
+            btn.disabled = true;
+            errorDiv.classList.remove('show');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+                
+                // Save token
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirect to plugins page
+                window.location.href = 'plugins.html';
+                
+            } catch (error) {
+                errorDiv.textContent = error.message || 'خطا در ورود. لطفاً دوباره تلاش کنید.';
+                errorDiv.classList.add('show');
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ورود';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
