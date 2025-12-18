@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت صفحات | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-rose"></i>
+                <h2>غنچه لاله زار</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>داشبورد</span>
+                </a>
+                <a href="posts.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>مطالب</span>
+                </a>
+                <a href="pages.html" class="nav-item active">
+                    <i class="fas fa-copy"></i>
+                    <span>صفحات</span>
+                </a>
+                <a href="media.html" class="nav-item">
+                    <i class="fas fa-images"></i>
+                    <span>رسانه‌ها</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>کاربران</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>مشاهده سایت</span>
+                </a>
+                <a href="#" class="nav-item" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>خروج</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-title">
+                    <h1>مدیریت صفحات</h1>
+                </div>
+                <div class="topbar-user">
+                    <span id="user-name">Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=c2185b&color=fff" alt="User" class="user-avatar">
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-actions">
+                    <button class="btn btn-primary" onclick="showNewPageModal()">
+                        <i class="fas fa-plus"></i> صفحه جدید
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-copy"></i> لیست صفحات</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>عنوان</th>
+                                    <th>وضعیت</th>
+                                    <th>تاریخ</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pages-table">
+                                <tr><td colspan="4" class="loading">در حال بارگذاری...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="page-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">صفحه جدید</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="page-form">
+                <input type="hidden" id="page-id">
+                <div class="form-group">
+                    <label for="page-title">عنوان</label>
+                    <input type="text" id="page-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="page-content">محتوا</label>
+                    <textarea id="page-content" rows="6"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="page-status">وضعیت</label>
+                    <select id="page-status">
+                        <option value="draft">پیش‌نویس</option>
+                        <option value="published">منتشر شده</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">انصراف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .page-actions { margin-bottom: 20px; }
+        .loading { text-align: center; color: #999; }
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        .modal-content form { padding: 20px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-edit, .btn-delete {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-edit { background: #e3f2fd; color: #1565c0; }
+        .btn-delete { background: #ffebee; color: #c62828; }
+    </style>
+
+    <script src="auth.js"></script>
+    <script src="api-client.js"></script>
+    <script>
+        let editingPageId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuth = await requireAuth();
+            if (!isAuth) return;
+
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.first_name || user.username;
+            }
+
+            loadPages();
+        });
+
+        async function loadPages() {
+            try {
+                const response = await apiClient.getPages();
+                const tableBody = document.getElementById('pages-table');
+
+                if (!response.data || response.data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="loading">هنوز صفحه‌ای وجود ندارد</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = response.data.map(page => `
+                    <tr>
+                        <td>${page.title}</td>
+                        <td><span class="status-badge ${page.status}">${page.status === 'published' ? 'منتشر شده' : 'پیش‌نویس'}</span></td>
+                        <td>${new Date(page.created_at).toLocaleDateString('fa-IR')}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editPage(${page.id})"><i class="fas fa-edit"></i></button>
+                            <button class="btn-delete" onclick="deletePage(${page.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading pages:', error);
+                document.getElementById('pages-table').innerHTML = '<tr><td colspan="4" class="loading">خطا در بارگذاری</td></tr>';
+            }
+        }
+
+        function showNewPageModal() {
+            editingPageId = null;
+            document.getElementById('modal-title').textContent = 'صفحه جدید';
+            document.getElementById('page-form').reset();
+            document.getElementById('page-modal').style.display = 'flex';
+        }
+
+        async function editPage(id) {
+            try {
+                const response = await apiClient.getPage(id);
+                const page = response.data;
+
+                editingPageId = id;
+                document.getElementById('modal-title').textContent = 'ویرایش صفحه';
+                document.getElementById('page-title').value = page.title;
+                document.getElementById('page-content').value = page.content;
+                document.getElementById('page-status').value = page.status;
+                document.getElementById('page-modal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading page:', error);
+                alert('خطا در بارگذاری صفحه');
+            }
+        }
+
+        async function deletePage(id) {
+            if (!confirm('آیا از حذف این صفحه مطمئن هستید؟')) return;
+
+            try {
+                await apiClient.deletePage(id);
+                loadPages();
+            } catch (error) {
+                console.error('Error deleting page:', error);
+                alert('خطا در حذف صفحه');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('page-modal').style.display = 'none';
+        }
+
+        document.getElementById('page-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const pageData = {
+                title: document.getElementById('page-title').value,
+                content: document.getElementById('page-content').value,
+                status: document.getElementById('page-status').value
+            };
+
+            try {
+                if (editingPageId) {
+                    await apiClient.updatePage(editingPageId, pageData);
+                } else {
+                    await apiClient.createPage(pageData);
+                }
+                closeModal();
+                loadPages();
+            } catch (error) {
+                console.error('Error saving page:', error);
+                alert('خطا در ذخیره صفحه');
+            }
+        });
+
+        async function handleLogout() {
+            await logout();
+            window.location.href = 'login.html';
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.admin-wrapper').classList.toggle('sidebar-open');
+        }
+    </script>
+</body>
+</html>

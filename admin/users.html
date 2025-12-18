@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت کاربران | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-rose"></i>
+                <h2>غنچه لاله زار</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>داشبورد</span></a>
+                <a href="posts.html" class="nav-item"><i class="fas fa-file-alt"></i><span>مطالب</span></a>
+                <a href="pages.html" class="nav-item"><i class="fas fa-copy"></i><span>صفحات</span></a>
+                <a href="media.html" class="nav-item"><i class="fas fa-images"></i><span>رسانه‌ها</span></a>
+                <a href="users.html" class="nav-item active"><i class="fas fa-users"></i><span>کاربران</span></a>
+                <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>تنظیمات</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>مشاهده سایت</span></a>
+                <a href="#" class="nav-item" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i><span>خروج</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div class="topbar-title"><h1>مدیریت کاربران</h1></div>
+                <div class="topbar-user">
+                    <span id="user-name">Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=c2185b&color=fff" alt="User" class="user-avatar">
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> لیست کاربران</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>نام کاربری</th>
+                                    <th>نام</th>
+                                    <th>ایمیل</th>
+                                    <th>نقش</th>
+                                    <th>تاریخ عضویت</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table">
+                                <tr><td colspan="5" class="loading">در حال بارگذاری...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <style>
+        .loading { text-align: center; color: #999; }
+        .role-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .role-badge.administrator {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .role-badge.author {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+    </style>
+
+    <script src="auth.js"></script>
+    <script src="api-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuth = await requireAuth();
+            if (!isAuth) return;
+
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.first_name || user.username;
+            }
+
+            loadUsers();
+        });
+
+        async function loadUsers() {
+            try {
+                const response = await apiClient.getUsers();
+                const tableBody = document.getElementById('users-table');
+
+                if (!response.data || response.data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="loading">هنوز کاربری وجود ندارد</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = response.data.map(user => `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.first_name} ${user.last_name}</td>
+                        <td>${user.email}</td>
+                        <td><span class="role-badge ${user.role}">${user.role === 'administrator' ? 'مدیر' : 'نویسنده'}</span></td>
+                        <td>${new Date(user.created_at).toLocaleDateString('fa-IR')}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('users-table').innerHTML = '<tr><td colspan="5" class="loading">خطا در بارگذاری</td></tr>';
+            }
+        }
+
+        async function handleLogout() {
+            await logout();
+            window.location.href = 'login.html';
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.admin-wrapper').classList.toggle('sidebar-open');
+        }
+    </script>
+</body>
+</html>
