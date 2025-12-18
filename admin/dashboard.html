@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد | پنل مدیریت غنچه لاله زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-rose"></i>
+                <h2>غنچه لاله زار</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>داشبورد</span>
+                </a>
+                <a href="posts.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>مطالب</span>
+                </a>
+                <a href="pages.html" class="nav-item">
+                    <i class="fas fa-copy"></i>
+                    <span>صفحات</span>
+                </a>
+                <a href="media.html" class="nav-item">
+                    <i class="fas fa-images"></i>
+                    <span>رسانه‌ها</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>کاربران</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>مشاهده سایت</span>
+                </a>
+                <a href="#" class="nav-item" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>خروج</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-title">
+                    <h1>داشبورد</h1>
+                </div>
+                <div class="topbar-user">
+                    <span id="user-name">Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=c2185b&color=fff" alt="User" class="user-avatar">
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content-wrapper">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon posts">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="posts-count">0</h3>
+                            <p>مطالب</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pages">
+                            <i class="fas fa-copy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pages-count">0</h3>
+                            <p>صفحات</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon users">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="users-count">0</h3>
+                            <p>کاربران</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon media">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="media-count">0</h3>
+                            <p>رسانه‌ها</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h2>دسترسی سریع</h2>
+                    <div class="actions-grid">
+                        <a href="posts.html?new=1" class="action-card">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>مطلب جدید</span>
+                        </a>
+                        <a href="pages.html?new=1" class="action-card">
+                            <i class="fas fa-file-medical"></i>
+                            <span>صفحه جدید</span>
+                        </a>
+                        <a href="media.html" class="action-card">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>آپلود رسانه</span>
+                        </a>
+                        <a href="settings.html" class="action-card">
+                            <i class="fas fa-cogs"></i>
+                            <span>تنظیمات</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-clock"></i> آخرین مطالب</h3>
+                            <a href="posts.html">مشاهده همه</a>
+                        </div>
+                        <div class="card-body">
+                            <ul class="recent-list" id="recent-posts">
+                                <li class="loading">در حال بارگذاری...</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-server"></i> وضعیت سرور</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="server-status">
+                                <div class="status-item">
+                                    <span class="status-label">API Server</span>
+                                    <span class="status-indicator" id="api-status">
+                                        <i class="fas fa-circle"></i> بررسی...
+                                    </span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Database</span>
+                                    <span class="status-indicator online">
+                                        <i class="fas fa-circle"></i> آنلاین
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="api-client.js"></script>
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuth = await requireAuth();
+            if (!isAuth) return;
+
+            // Display user info
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.first_name || user.username;
+            }
+
+            // Load dashboard data
+            loadDashboardData();
+            checkApiStatus();
+        });
+
+        async function loadDashboardData() {
+            try {
+                // Load posts count
+                const postsResponse = await apiClient.getPosts();
+                if (postsResponse.data) {
+                    document.getElementById('posts-count').textContent = postsResponse.data.length;
+                    displayRecentPosts(postsResponse.data.slice(0, 5));
+                }
+
+                // Load pages count
+                const pagesResponse = await apiClient.getPages();
+                if (pagesResponse.data) {
+                    document.getElementById('pages-count').textContent = pagesResponse.data.length;
+                }
+
+                // Load users count
+                const usersResponse = await apiClient.getUsers();
+                if (usersResponse.data) {
+                    document.getElementById('users-count').textContent = usersResponse.data.length;
+                }
+
+                // Load media count
+                const mediaResponse = await apiClient.getMedia();
+                if (mediaResponse.data) {
+                    document.getElementById('media-count').textContent = mediaResponse.data.length;
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        function displayRecentPosts(posts) {
+            const list = document.getElementById('recent-posts');
+            if (posts.length === 0) {
+                list.innerHTML = '<li class="empty">هنوز مطلبی وجود ندارد</li>';
+                return;
+            }
+
+            list.innerHTML = posts.map(post => `
+                <li>
+                    <a href="posts.html?edit=${post.id}">${post.title}</a>
+                    <span class="status-badge ${post.status}">${post.status === 'published' ? 'منتشر شده' : 'پیش‌نویس'}</span>
+                </li>
+            `).join('');
+        }
+
+        async function checkApiStatus() {
+            const statusEl = document.getElementById('api-status');
+            try {
+                await apiClient.healthCheck();
+                statusEl.innerHTML = '<i class="fas fa-circle"></i> آنلاین';
+                statusEl.className = 'status-indicator online';
+            } catch (error) {
+                statusEl.innerHTML = '<i class="fas fa-circle"></i> آفلاین';
+                statusEl.className = 'status-indicator offline';
+            }
+        }
+
+        async function handleLogout() {
+            await logout();
+            window.location.href = 'login.html';
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.admin-wrapper').classList.toggle('sidebar-collapsed');
+        }
+    </script>
+</body>
+</html>

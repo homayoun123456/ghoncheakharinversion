@@ -274,48 +274,36 @@ function initializeFormHandling() {
 // Function to change language by redirecting to the appropriate URL
 function changeLanguage() {
     const selectedLang = document.getElementById('language-switcher').value;
+    const currentPath = window.location.pathname;
+    
+    // Check if we're in a language subdirectory
+    const isInEn = currentPath.includes('/en/');
+    const isInAr = currentPath.includes('/ar/');
+    const isInZh = currentPath.includes('/zh/');
+    const isInLangDir = isInEn || isInAr || isInZh;
 
-    // Determine current page location to handle relative paths properly
-    const pathParts = window.location.pathname.split('/');
-    const isRoot = pathParts[pathParts.length - 2] === 'ghoncheye-lalehzar-final-structure';
-    const isEn = pathParts[pathParts.length - 2] === 'en';
-    const isAr = pathParts[pathParts.length - 2] === 'ar';
-    const isZh = pathParts[pathParts.length - 2] === 'zh';
+    // Build the base path
+    let basePath = '';
+    if (isInLangDir) {
+        basePath = '../';
+    } else {
+        basePath = './';
+    }
 
-    if (selectedLang === 'en') {
-        if (isRoot) {
-            window.location.href = './en/';
-        } else if (isAr || isZh) {
-            window.location.href = '../en/';
-        } else {
-            // Already on English version or other case
-            window.location.href = './';
-        }
-    } else if (selectedLang === 'fa') {
-        if (isEn || isAr || isZh) {
-            window.location.href = '../';
-        } else {
-            // Already on Farsi version
-            window.location.href = './';
-        }
-    } else if (selectedLang === 'ar') {
-        if (isRoot) {
-            window.location.href = './ar/';
-        } else if (isEn || isZh) {
-            window.location.href = '../ar/';
-        } else {
-            // Already on Arabic version
-            window.location.href = './';
-        }
-    } else if (selectedLang === 'zh') {
-        if (isRoot) {
-            window.location.href = './zh/';
-        } else if (isEn || isAr) {
-            window.location.href = '../zh/';
-        } else {
-            // Already on Chinese version
-            window.location.href = './';
-        }
+    // Redirect based on selected language
+    switch (selectedLang) {
+        case 'fa':
+            window.location.href = isInLangDir ? '../index.html' : './index.html';
+            break;
+        case 'en':
+            window.location.href = basePath + 'en/index.html';
+            break;
+        case 'ar':
+            window.location.href = basePath + 'ar/index.html';
+            break;
+        case 'zh':
+            window.location.href = basePath + 'zh/index.html';
+            break;
     }
 }
 
