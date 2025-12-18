@@ -56,12 +56,47 @@ let database = {
       updated_at: new Date().toISOString()
     }
   ],
-  media: []
+  media: [],
+  plugins: [
+    // Pre-installed/recommended plugins
+    {
+      slug: 'wordpress-seo',
+      name: 'Yoast SEO',
+      version: '22.0',
+      author: 'Team Yoast',
+      description: 'بهترین افزونه سئو برای وردپرس. بهینه‌سازی محتوا، نقشه سایت XML، و بسیاری امکانات دیگر.',
+      description_en: 'The first true all-in-one SEO solution for WordPress, including on-page content analysis, XML sitemaps and much more.',
+      status: 'inactive',
+      installed_at: null,
+      icon: 'https://ps.w.org/wordpress-seo/assets/icon-256x256.png',
+      rating: 4.8,
+      downloads: 500000000,
+      requires_php: '7.4',
+      tested: '6.4',
+      homepage: 'https://yoast.com/wordpress/plugins/seo/'
+    },
+    {
+      slug: 'really-simple-ssl',
+      name: 'Really Simple SSL',
+      version: '7.2.3',
+      author: 'Really Simple Plugins',
+      description: 'به راحتی SSL/HTTPS را در سایت خود فعال کنید. این افزونه تمام تنظیمات لازم را به صورت خودکار انجام می‌دهد.',
+      description_en: 'Easily improve site security with WordPress hardening, vulnerability detection and SSL certificate generation.',
+      status: 'inactive',
+      installed_at: null,
+      icon: 'https://ps.w.org/really-simple-ssl/assets/icon-256x256.png',
+      rating: 4.9,
+      downloads: 30000000,
+      requires_php: '7.4',
+      tested: '6.4',
+      homepage: 'https://really-simple-ssl.com/'
+    }
+  ]
 };
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:8000', 'http://localhost:3000'],
+  origin: ['http://localhost:8000', 'http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3001'],
   credentials: true
 }));
 
@@ -77,6 +112,9 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
+
+// Serve static files from admin directory
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
 // Simple password verification (for demo, using hardcoded hash)
 function verifyPassword(password, hash) {
@@ -518,6 +556,393 @@ app.post('/api/media/upload', isAuthenticated, (req, res) => {
   res.status(201).json({
     success: true,
     data: newMedia
+  });
+});
+
+// ==================== WORDPRESS PLUGINS ENDPOINTS ====================
+
+// WordPress.org Plugin API URL
+const WP_PLUGIN_API = 'https://api.wordpress.org/plugins/info/1.2/';
+
+/**
+ * Helper function to fetch from WordPress.org API
+ */
+async function fetchWordPressPlugins(params) {
+  const https = require('https');
+  
+  return new Promise((resolve, reject) => {
+    const url = new URL(WP_PLUGIN_API);
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    
+    https.get(url.toString(), (response) => {
+      let data = '';
+      response.on('data', chunk => data += chunk);
+      response.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+/**
+ * GET /api/plugins
+ * Get all installed plugins
+ */
+app.get('/api/plugins', isAuthenticated, (req, res) => {
+  res.json({
+    success: true,
+    data: database.plugins
+  });
+});
+
+/**
+ * GET /api/plugins/search
+ * Search WordPress.org plugin repository
+ */
+app.get('/api/plugins/search', isAuthenticated, async (req, res) => {
+  try {
+    const { search, page = 1, per_page = 12 } = req.query;
+    
+    if (!search) {
+      return res.status(400).json({ error: 'Search term is required' });
+    }
+    
+    const params = {
+      action: 'query_plugins',
+      'request[search]': search,
+      'request[page]': page,
+      'request[per_page]': per_page,
+      'request[fields][icons]': '1',
+      'request[fields][banners]': '1',
+      'request[fields][short_description]': '1',
+      'request[fields][ratings]': '1',
+      'request[fields][downloaded]': '1',
+      'request[fields][active_installs]': '1',
+      'request[fields][last_updated]': '1',
+      'request[fields][requires]': '1',
+      'request[fields][requires_php]': '1',
+      'request[fields][tested]': '1'
+    };
+    
+    const result = await fetchWordPressPlugins(params);
+    
+    res.json({
+      success: true,
+      data: {
+        plugins: result.plugins || [],
+        info: result.info || {},
+        total: result.info?.results || 0,
+        pages: result.info?.pages || 1
+      }
+    });
+  } catch (error) {
+    console.error('WordPress API Error:', error);
+    res.status(500).json({ error: 'Failed to search plugins', message: error.message });
+  }
+});
+
+/**
+ * GET /api/plugins/info/:slug
+ * Get detailed plugin information from WordPress.org
+ */
+app.get('/api/plugins/info/:slug', isAuthenticated, async (req, res) => {
+  try {
+    const { slug } = req.params;
+    
+    const params = {
+      action: 'plugin_information',
+      'request[slug]': slug,
+      'request[fields][icons]': '1',
+      'request[fields][banners]': '1',
+      'request[fields][description]': '1',
+      'request[fields][short_description]': '1',
+      'request[fields][ratings]': '1',
+      'request[fields][downloaded]': '1',
+      'request[fields][active_installs]': '1',
+      'request[fields][last_updated]': '1',
+      'request[fields][requires]': '1',
+      'request[fields][requires_php]': '1',
+      'request[fields][tested]': '1',
+      'request[fields][sections]': '1',
+      'request[fields][screenshots]': '1',
+      'request[fields][changelog]': '1',
+      'request[fields][contributors]': '1',
+      'request[fields][homepage]': '1',
+      'request[fields][tags]': '1'
+    };
+    
+    const result = await fetchWordPressPlugins(params);
+    
+    if (!result || result.error) {
+      return res.status(404).json({ error: 'Plugin not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('WordPress API Error:', error);
+    res.status(500).json({ error: 'Failed to get plugin info', message: error.message });
+  }
+});
+
+/**
+ * GET /api/plugins/popular
+ * Get popular plugins from WordPress.org
+ */
+app.get('/api/plugins/popular', isAuthenticated, async (req, res) => {
+  try {
+    const { page = 1, per_page = 12 } = req.query;
+    
+    const params = {
+      action: 'query_plugins',
+      'request[browse]': 'popular',
+      'request[page]': page,
+      'request[per_page]': per_page,
+      'request[fields][icons]': '1',
+      'request[fields][banners]': '1',
+      'request[fields][short_description]': '1',
+      'request[fields][ratings]': '1',
+      'request[fields][downloaded]': '1',
+      'request[fields][active_installs]': '1',
+      'request[fields][last_updated]': '1',
+      'request[fields][requires]': '1',
+      'request[fields][requires_php]': '1',
+      'request[fields][tested]': '1'
+    };
+    
+    const result = await fetchWordPressPlugins(params);
+    
+    res.json({
+      success: true,
+      data: {
+        plugins: result.plugins || [],
+        info: result.info || {},
+        total: result.info?.results || 0,
+        pages: result.info?.pages || 1
+      }
+    });
+  } catch (error) {
+    console.error('WordPress API Error:', error);
+    res.status(500).json({ error: 'Failed to get popular plugins', message: error.message });
+  }
+});
+
+/**
+ * GET /api/plugins/recommended
+ * Get recommended plugins (Yoast SEO, Really Simple SSL, etc.)
+ */
+app.get('/api/plugins/recommended', isAuthenticated, async (req, res) => {
+  try {
+    const recommendedSlugs = [
+      'wordpress-seo',           // Yoast SEO
+      'really-simple-ssl',       // Really Simple SSL
+      'contact-form-7',          // Contact Form 7
+      'elementor',               // Elementor Page Builder
+      'woocommerce',             // WooCommerce
+      'wordfence',               // Wordfence Security
+      'jetpack',                 // Jetpack
+      'google-site-kit'          // Site Kit by Google
+    ];
+    
+    const plugins = [];
+    
+    for (const slug of recommendedSlugs) {
+      try {
+        const params = {
+          action: 'plugin_information',
+          'request[slug]': slug,
+          'request[fields][icons]': '1',
+          'request[fields][banners]': '1',
+          'request[fields][short_description]': '1',
+          'request[fields][ratings]': '1',
+          'request[fields][downloaded]': '1',
+          'request[fields][active_installs]': '1',
+          'request[fields][requires_php]': '1',
+          'request[fields][tested]': '1'
+        };
+        
+        const result = await fetchWordPressPlugins(params);
+        if (result && !result.error) {
+          plugins.push(result);
+        }
+      } catch (e) {
+        console.log(`Failed to fetch ${slug}:`, e.message);
+      }
+    }
+    
+    res.json({
+      success: true,
+      data: { plugins }
+    });
+  } catch (error) {
+    console.error('WordPress API Error:', error);
+    res.status(500).json({ error: 'Failed to get recommended plugins', message: error.message });
+  }
+});
+
+/**
+ * POST /api/plugins/install
+ * Install a plugin from WordPress.org
+ */
+app.post('/api/plugins/install', isAuthenticated, async (req, res) => {
+  try {
+    const { slug } = req.body;
+    
+    if (!slug) {
+      return res.status(400).json({ error: 'Plugin slug is required' });
+    }
+    
+    // Check if already installed
+    const existingPlugin = database.plugins.find(p => p.slug === slug);
+    if (existingPlugin && existingPlugin.installed_at) {
+      return res.status(400).json({ error: 'Plugin is already installed' });
+    }
+    
+    // Fetch plugin info from WordPress.org
+    const params = {
+      action: 'plugin_information',
+      'request[slug]': slug,
+      'request[fields][icons]': '1',
+      'request[fields][short_description]': '1',
+      'request[fields][ratings]': '1',
+      'request[fields][downloaded]': '1',
+      'request[fields][requires_php]': '1',
+      'request[fields][tested]': '1',
+      'request[fields][homepage]': '1'
+    };
+    
+    const pluginInfo = await fetchWordPressPlugins(params);
+    
+    if (!pluginInfo || pluginInfo.error) {
+      return res.status(404).json({ error: 'Plugin not found in WordPress repository' });
+    }
+    
+    // Create or update plugin entry
+    const newPlugin = {
+      slug: pluginInfo.slug,
+      name: pluginInfo.name,
+      version: pluginInfo.version,
+      author: pluginInfo.author ? pluginInfo.author.replace(/<[^>]*>/g, '') : 'Unknown',
+      description: pluginInfo.short_description,
+      description_en: pluginInfo.short_description,
+      status: 'inactive',
+      installed_at: new Date().toISOString(),
+      icon: pluginInfo.icons?.['2x'] || pluginInfo.icons?.['1x'] || pluginInfo.icons?.default || '',
+      rating: pluginInfo.rating / 20, // WordPress rating is out of 100, convert to 5
+      downloads: pluginInfo.downloaded || 0,
+      active_installs: pluginInfo.active_installs || 0,
+      requires_php: pluginInfo.requires_php || '7.0',
+      tested: pluginInfo.tested || '',
+      homepage: pluginInfo.homepage || `https://wordpress.org/plugins/${slug}/`,
+      download_link: pluginInfo.download_link || ''
+    };
+    
+    // Update or add to database
+    const existingIndex = database.plugins.findIndex(p => p.slug === slug);
+    if (existingIndex !== -1) {
+      database.plugins[existingIndex] = { ...database.plugins[existingIndex], ...newPlugin };
+    } else {
+      database.plugins.push(newPlugin);
+    }
+    
+    res.json({
+      success: true,
+      message: `${pluginInfo.name} installed successfully`,
+      data: newPlugin
+    });
+  } catch (error) {
+    console.error('Install Error:', error);
+    res.status(500).json({ error: 'Failed to install plugin', message: error.message });
+  }
+});
+
+/**
+ * POST /api/plugins/activate
+ * Activate an installed plugin
+ */
+app.post('/api/plugins/activate', isAuthenticated, (req, res) => {
+  const { slug } = req.body;
+  
+  if (!slug) {
+    return res.status(400).json({ error: 'Plugin slug is required' });
+  }
+  
+  const plugin = database.plugins.find(p => p.slug === slug);
+  
+  if (!plugin) {
+    return res.status(404).json({ error: 'Plugin not found' });
+  }
+  
+  if (!plugin.installed_at) {
+    return res.status(400).json({ error: 'Plugin must be installed first' });
+  }
+  
+  plugin.status = 'active';
+  
+  res.json({
+    success: true,
+    message: `${plugin.name} activated successfully`,
+    data: plugin
+  });
+});
+
+/**
+ * POST /api/plugins/deactivate
+ * Deactivate an active plugin
+ */
+app.post('/api/plugins/deactivate', isAuthenticated, (req, res) => {
+  const { slug } = req.body;
+  
+  if (!slug) {
+    return res.status(400).json({ error: 'Plugin slug is required' });
+  }
+  
+  const plugin = database.plugins.find(p => p.slug === slug);
+  
+  if (!plugin) {
+    return res.status(404).json({ error: 'Plugin not found' });
+  }
+  
+  plugin.status = 'inactive';
+  
+  res.json({
+    success: true,
+    message: `${plugin.name} deactivated successfully`,
+    data: plugin
+  });
+});
+
+/**
+ * DELETE /api/plugins/:slug
+ * Delete/Uninstall a plugin
+ */
+app.delete('/api/plugins/:slug', isAuthenticated, (req, res) => {
+  const { slug } = req.params;
+  
+  const index = database.plugins.findIndex(p => p.slug === slug);
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Plugin not found' });
+  }
+  
+  const plugin = database.plugins[index];
+  
+  if (plugin.status === 'active') {
+    return res.status(400).json({ error: 'Please deactivate the plugin before deleting' });
+  }
+  
+  database.plugins.splice(index, 1);
+  
+  res.json({
+    success: true,
+    message: `${plugin.name} deleted successfully`,
+    data: plugin
   });
 });
 

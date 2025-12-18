@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت افزونه‌ها | غنچه لاله‌زار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="plugins.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-spa"></i>
+            <h2>غنچه لاله‌زار</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>داشبورد</span>
+            </a>
+            <a href="posts.html" class="nav-item">
+                <i class="fas fa-file-alt"></i>
+                <span>نوشته‌ها</span>
+            </a>
+            <a href="pages.html" class="nav-item">
+                <i class="fas fa-copy"></i>
+                <span>صفحات</span>
+            </a>
+            <a href="media.html" class="nav-item">
+                <i class="fas fa-images"></i>
+                <span>رسانه</span>
+            </a>
+            <a href="plugins.html" class="nav-item active">
+                <i class="fas fa-plug"></i>
+                <span>افزونه‌ها</span>
+            </a>
+            <a href="users.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>کاربران</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>تنظیمات</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>خروج</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>افزونه‌ها</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="username">مدیر</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="installed" onclick="switchTab('installed')">
+                <i class="fas fa-check-circle"></i>
+                افزونه‌های نصب شده
+            </button>
+            <button class="tab-btn" data-tab="search" onclick="switchTab('search')">
+                <i class="fas fa-search"></i>
+                جستجو در مخزن
+            </button>
+            <button class="tab-btn" data-tab="recommended" onclick="switchTab('recommended')">
+                <i class="fas fa-star"></i>
+                پیشنهادی
+            </button>
+            <button class="tab-btn" data-tab="popular" onclick="switchTab('popular')">
+                <i class="fas fa-fire"></i>
+                محبوب
+            </button>
+        </div>
+
+        <!-- Tab Content: Installed Plugins -->
+        <div class="tab-content active" id="tab-installed">
+            <div class="section-header">
+                <h2>افزونه‌های نصب شده</h2>
+                <p>مدیریت افزونه‌های نصب شده در سیستم</p>
+            </div>
+            
+            <div class="plugins-grid" id="installed-plugins">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>در حال بارگذاری...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Search Plugins -->
+        <div class="tab-content" id="tab-search">
+            <div class="section-header">
+                <h2>جستجو در مخزن وردپرس</h2>
+                <p>هزاران افزونه رایگان از مخزن رسمی وردپرس</p>
+            </div>
+            
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="plugin-search" placeholder="جستجوی افزونه... (مثلاً: Yoast SEO, Really Simple SSL)">
+                    <button class="search-btn" onclick="searchPlugins()">
+                        <i class="fas fa-search"></i>
+                        جستجو
+                    </button>
+                </div>
+                <div class="quick-search">
+                    <span>جستجوی سریع:</span>
+                    <button onclick="quickSearch('yoast seo')">Yoast SEO</button>
+                    <button onclick="quickSearch('really simple ssl')">Really Simple SSL</button>
+                    <button onclick="quickSearch('contact form')">Contact Form</button>
+                    <button onclick="quickSearch('elementor')">Elementor</button>
+                    <button onclick="quickSearch('woocommerce')">WooCommerce</button>
+                </div>
+            </div>
+            
+            <div class="plugins-grid" id="search-results">
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>جستجوی افزونه</h3>
+                    <p>عبارت مورد نظر را وارد کنید یا از دکمه‌های جستجوی سریع استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Recommended Plugins -->
+        <div class="tab-content" id="tab-recommended">
+            <div class="section-header">
+                <h2>افزونه‌های پیشنهادی</h2>
+                <p>بهترین افزونه‌های وردپرس برای شروع کار</p>
+            </div>
+            
+            <div class="featured-plugins">
+                <div class="featured-card yoast">
+                    <div class="featured-badge">پرکاربرد</div>
+                    <img src="https://ps.w.org/wordpress-seo/assets/icon-256x256.png" alt="Yoast SEO">
+                    <h3>Yoast SEO</h3>
+                    <p>قدرتمندترین افزونه سئو برای وردپرس. بهینه‌سازی محتوا، نقشه سایت XML، متا تگ‌ها و بسیاری امکانات دیگر.</p>
+                    <div class="featured-stats">
+                        <span><i class="fas fa-download"></i> +5 میلیون نصب فعال</span>
+                        <span><i class="fas fa-star"></i> 4.8/5</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="installPlugin('wordpress-seo')">
+                        <i class="fas fa-download"></i>
+                        نصب افزونه
+                    </button>
+                </div>
+                
+                <div class="featured-card ssl">
+                    <div class="featured-badge">امنیت</div>
+                    <img src="https://ps.w.org/really-simple-ssl/assets/icon-256x256.png" alt="Really Simple SSL">
+                    <h3>Really Simple SSL</h3>
+                    <p>به راحتی SSL/HTTPS را در سایت خود فعال کنید. تمام تنظیمات لازم به صورت خودکار انجام می‌شود.</p>
+                    <div class="featured-stats">
+                        <span><i class="fas fa-download"></i> +5 میلیون نصب فعال</span>
+                        <span><i class="fas fa-star"></i> 4.9/5</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="installPlugin('really-simple-ssl')">
+                        <i class="fas fa-download"></i>
+                        نصب افزونه
+                    </button>
+                </div>
+            </div>
+            
+            <h3 class="other-recommended-title">سایر افزونه‌های پیشنهادی</h3>
+            <div class="plugins-grid" id="recommended-plugins">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>در حال بارگذاری...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Popular Plugins -->
+        <div class="tab-content" id="tab-popular">
+            <div class="section-header">
+                <h2>افزونه‌های محبوب</h2>
+                <p>پرطرفدارترین افزونه‌های مخزن وردپرس</p>
+            </div>
+            
+            <div class="plugins-grid" id="popular-plugins">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>در حال بارگذاری...</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Plugin Details Modal -->
+    <div class="modal" id="plugin-modal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-body" id="modal-body">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="plugins.js"></script>
+</body>
+</html>
