@@ -64,6 +64,84 @@ try {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )");
     
+    // Permalinks settings table
+    $pdo->exec("CREATE TABLE IF NOT EXISTS permalink_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        setting_key TEXT UNIQUE NOT NULL,
+        setting_value TEXT,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    // URL redirects table (for old URLs to redirect to new ones)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS url_redirects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        old_url TEXT UNIQUE NOT NULL,
+        new_url TEXT NOT NULL,
+        redirect_type INTEGER DEFAULT 301,
+        content_type TEXT,
+        content_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    // Add permalink column to posts if not exists
+    try {
+        $pdo->exec("ALTER TABLE posts ADD COLUMN permalink TEXT");
+    } catch(PDOException $e) {
+        // Column might already exist
+    }
+    
+    // Add permalink_structure column to posts (stores which structure was used when created)
+    try {
+        $pdo->exec("ALTER TABLE posts ADD COLUMN permalink_structure TEXT");
+    } catch(PDOException $e) {
+        // Column might already exist
+    }
+    
+    // Add custom_permalink column to posts (for manual override)
+    try {
+        $pdo->exec("ALTER TABLE posts ADD COLUMN custom_permalink TEXT");
+    } catch(PDOException $e) {
+        // Column might already exist
+    }
+    
+    // Add permalink column to pages if not exists
+    try {
+        $pdo->exec("ALTER TABLE pages ADD COLUMN permalink TEXT");
+    } catch(PDOException $e) {
+        // Column might already exist
+    }
+    
+    // Add custom_permalink column to pages
+    try {
+        $pdo->exec("ALTER TABLE pages ADD COLUMN custom_permalink TEXT");
+    } catch(PDOException $e) {
+        // Column might already exist
+    }
+    
+    // Initialize default permalink settings if not exist
+    $defaultSettings = [
+        ['post_permalink_structure', '/%year%/%month%/%postname%/'],
+        ['page_permalink_structure', '/%pagename%/'],
+        ['category_base', 'category'],
+        ['tag_base', 'tag'],
+        ['use_trailing_slash', '1'],
+        ['redirect_old_urls', '1']
+    ];
+    
+    foreach ($defaultSettings as $setting) {
+        try {
+            $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM permalink_settings WHERE setting_key = ?");
+            $checkStmt->execute([$setting[0]]);
+            if ($checkStmt->fetchColumn() == 0) {
+                $insertStmt = $pdo->prepare("INSERT INTO permalink_settings (setting_key, setting_value) VALUES (?, ?)");
+                $insertStmt->execute([$setting[0], $setting[1]]);
+            }
+        } catch(PDOException $e) {
+            // Log but don't crash
+            error_log("Permalink settings initialization error: " . $e->getMessage());
+        }
+    }
+    
     // Create or ensure default admin user exists
     try {
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = ?");

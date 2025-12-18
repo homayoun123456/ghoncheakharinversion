@@ -1,6 +1,7 @@
 <?php
 // api.php - Main API endpoint handler
 require_once 'config.php';
+require_once 'permalink.php';
 
 // Parse the request
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -106,6 +107,17 @@ elseif ($resource === 'auth') {
 } elseif ($resource === 'categories' || (isset($_GET['categories']) && !$resource)) {
     // Categories functionality - may be implemented separately or return empty for now
     handleCategories($requestMethod, $id);
+} elseif ($resource === 'permalinks' || (isset($_GET['permalinks']) && !$resource)) {
+    // Permalink management
+    $action = isset($_GET['permalinks']) && !is_numeric($_GET['permalinks']) ? $_GET['permalinks'] : $id;
+    handlePermalinks($requestMethod, $action);
+} elseif ($resource === 'resolve' || (isset($_GET['resolve']) && !$resource)) {
+    // URL resolution
+    handleUrlResolve();
+} elseif ($resource === 'redirects' || (isset($_GET['redirects']) && !$resource)) {
+    // URL redirects management
+    $targetId = isset($_GET['redirects']) && is_numeric($_GET['redirects']) ? $_GET['redirects'] : $id;
+    handleRedirects($requestMethod, $targetId);
 } else {
     sendJsonResponse(['error' => 'Endpoint not found'], 404);
 }
@@ -380,18 +392,53 @@ function createPost() {
         $slug = isset($input['slug']) ? $input['slug'] : createSlug($input['title']);
         $authorId = getCurrentUser()['id'];
         
-        $stmt = $pdo->prepare("INSERT INTO posts (title, content, excerpt, slug, status, author_id, created_at, updated_at) 
-                              VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+        // Get current permalink structure
+        $permalinkStructure = getPermalinkSetting('post_permalink_structure', '/%year%/%month%/%postname%/');
+        
+        // Prepare post data for permalink generation
+        $postData = [
+            'id' => 0, // Will be updated after insert
+            'title' => $input['title'],
+            'slug' => $slug,
+            'created_at' => date('Y-m-d H:i:s'),
+            'category_id' => $input['category_id'] ?? null
+        ];
+        
+        // Generate permalink
+        $permalink = generatePostPermalink($postData, $permalinkStructure);
+        
+        // Handle custom permalink if provided
+        $customPermalink = null;
+        if (!empty($input['custom_permalink'])) {
+            $customPermalink = sanitizePermalink($input['custom_permalink']);
+            $permalink = $customPermalink;
+        }
+        
+        $stmt = $pdo->prepare("INSERT INTO posts (title, content, excerpt, slug, status, author_id, permalink, permalink_structure, custom_permalink, created_at, updated_at) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
         $stmt->execute([
             $input['title'],
             $input['content'],
             $input['excerpt'] ?? '',
             $slug,
             $input['status'] ?? 'draft',
-            $authorId
+            $authorId,
+            $permalink,
+            $permalinkStructure,
+            $customPermalink
         ]);
         
         $postId = $pdo->lastInsertId();
+        
+        // Update permalink with actual post ID if needed
+        $postData['id'] = $postId;
+        $finalPermalink = $customPermalink ?? generatePostPermalink($postData, $permalinkStructure);
+        $finalPermalink = ensureUniquePermalink($finalPermalink, 'post', $postId);
+        
+        // Update with final permalink
+        $updateStmt = $pdo->prepare("UPDATE posts SET permalink = ? WHERE id = ?");
+        $updateStmt->execute([$finalPermalink, $postId]);
+        
         getPost($postId); // Return the created post
     } catch (Exception $e) {
         sendJsonResponse(['error' => 'Failed to create post: ' . $e->getMessage()], 500);
@@ -417,14 +464,63 @@ function updatePost($id) {
             sendJsonResponse(['error' => 'Post not found'], 404);
         }
         
+        // Handle slug change
+        $newSlug = $input['slug'] ?? $post['slug'];
+        
+        // Handle custom permalink
+        $customPermalink = null;
+        $newPermalink = $post['permalink']; // Keep existing permalink by default
+        
+        if (isset($input['custom_permalink'])) {
+            if (!empty($input['custom_permalink'])) {
+                $customPermalink = sanitizePermalink($input['custom_permalink']);
+                $newPermalink = ensureUniquePermalink($customPermalink, 'post', $id);
+                
+                // Add redirect from old URL if different
+                if (!empty($post['permalink']) && $post['permalink'] !== $newPermalink) {
+                    $shouldRedirect = getPermalinkSetting('redirect_old_urls', '1') === '1';
+                    if ($shouldRedirect) {
+                        addUrlRedirect($post['permalink'], $newPermalink, 'post', $id);
+                    }
+                }
+            } else {
+                // Clear custom permalink, regenerate from structure
+                $customPermalink = null;
+                $postData = array_merge($post, [
+                    'slug' => $newSlug,
+                    'title' => $input['title'] ?? $post['title']
+                ]);
+                $newPermalink = generatePostPermalink($postData, $post['permalink_structure']);
+                $newPermalink = ensureUniquePermalink($newPermalink, 'post', $id);
+            }
+        } elseif ($newSlug !== $post['slug'] && empty($post['custom_permalink'])) {
+            // Slug changed and no custom permalink, regenerate
+            $postData = array_merge($post, [
+                'slug' => $newSlug,
+                'title' => $input['title'] ?? $post['title']
+            ]);
+            $newPermalink = generatePostPermalink($postData, $post['permalink_structure']);
+            $newPermalink = ensureUniquePermalink($newPermalink, 'post', $id);
+            
+            // Add redirect from old URL
+            if (!empty($post['permalink']) && $post['permalink'] !== $newPermalink) {
+                $shouldRedirect = getPermalinkSetting('redirect_old_urls', '1') === '1';
+                if ($shouldRedirect) {
+                    addUrlRedirect($post['permalink'], $newPermalink, 'post', $id);
+                }
+            }
+        }
+        
         // Update the post
-        $stmt = $pdo->prepare("UPDATE posts SET title = ?, content = ?, excerpt = ?, slug = ?, status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE posts SET title = ?, content = ?, excerpt = ?, slug = ?, status = ?, permalink = ?, custom_permalink = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
         $stmt->execute([
             $input['title'] ?? $post['title'],
             $input['content'] ?? $post['content'],
             $input['excerpt'] ?? $post['excerpt'],
-            $input['slug'] ?? $post['slug'],
+            $newSlug,
             $input['status'] ?? $post['status'],
+            $newPermalink,
+            $customPermalink,
             $id
         ]);
         
@@ -571,17 +667,47 @@ function createPage() {
         $slug = isset($input['slug']) ? $input['slug'] : createSlug($input['title']);
         $authorId = getCurrentUser()['id'];
         
-        $stmt = $pdo->prepare("INSERT INTO pages (title, content, slug, status, author_id, created_at, updated_at) 
-                              VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+        // Prepare page data for permalink generation
+        $pageData = [
+            'id' => 0,
+            'title' => $input['title'],
+            'slug' => $slug,
+            'parent_id' => $input['parent_id'] ?? null
+        ];
+        
+        // Generate permalink
+        $permalink = generatePagePermalink($pageData);
+        
+        // Handle custom permalink if provided
+        $customPermalink = null;
+        if (!empty($input['custom_permalink'])) {
+            $customPermalink = sanitizePermalink($input['custom_permalink']);
+            $permalink = $customPermalink;
+        }
+        
+        $stmt = $pdo->prepare("INSERT INTO pages (title, content, slug, status, author_id, permalink, custom_permalink, created_at, updated_at) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
         $stmt->execute([
             $input['title'],
             $input['content'],
             $slug,
             $input['status'] ?? 'draft',
-            $authorId
+            $authorId,
+            $permalink,
+            $customPermalink
         ]);
         
         $pageId = $pdo->lastInsertId();
+        
+        // Update permalink with actual page ID if needed
+        $pageData['id'] = $pageId;
+        $finalPermalink = $customPermalink ?? generatePagePermalink($pageData);
+        $finalPermalink = ensureUniquePermalink($finalPermalink, 'page', $pageId);
+        
+        // Update with final permalink
+        $updateStmt = $pdo->prepare("UPDATE pages SET permalink = ? WHERE id = ?");
+        $updateStmt->execute([$finalPermalink, $pageId]);
+        
         getPage($pageId); // Return the created page
     } catch (Exception $e) {
         sendJsonResponse(['error' => 'Failed to create page: ' . $e->getMessage()], 500);
@@ -607,13 +733,62 @@ function updatePage($id) {
             sendJsonResponse(['error' => 'Page not found'], 404);
         }
         
+        // Handle slug change
+        $newSlug = $input['slug'] ?? $page['slug'];
+        
+        // Handle custom permalink
+        $customPermalink = null;
+        $newPermalink = $page['permalink']; // Keep existing permalink by default
+        
+        if (isset($input['custom_permalink'])) {
+            if (!empty($input['custom_permalink'])) {
+                $customPermalink = sanitizePermalink($input['custom_permalink']);
+                $newPermalink = ensureUniquePermalink($customPermalink, 'page', $id);
+                
+                // Add redirect from old URL if different
+                if (!empty($page['permalink']) && $page['permalink'] !== $newPermalink) {
+                    $shouldRedirect = getPermalinkSetting('redirect_old_urls', '1') === '1';
+                    if ($shouldRedirect) {
+                        addUrlRedirect($page['permalink'], $newPermalink, 'page', $id);
+                    }
+                }
+            } else {
+                // Clear custom permalink, regenerate
+                $customPermalink = null;
+                $pageData = array_merge($page, [
+                    'slug' => $newSlug,
+                    'title' => $input['title'] ?? $page['title']
+                ]);
+                $newPermalink = generatePagePermalink($pageData);
+                $newPermalink = ensureUniquePermalink($newPermalink, 'page', $id);
+            }
+        } elseif ($newSlug !== $page['slug'] && empty($page['custom_permalink'])) {
+            // Slug changed and no custom permalink, regenerate
+            $pageData = array_merge($page, [
+                'slug' => $newSlug,
+                'title' => $input['title'] ?? $page['title']
+            ]);
+            $newPermalink = generatePagePermalink($pageData);
+            $newPermalink = ensureUniquePermalink($newPermalink, 'page', $id);
+            
+            // Add redirect from old URL
+            if (!empty($page['permalink']) && $page['permalink'] !== $newPermalink) {
+                $shouldRedirect = getPermalinkSetting('redirect_old_urls', '1') === '1';
+                if ($shouldRedirect) {
+                    addUrlRedirect($page['permalink'], $newPermalink, 'page', $id);
+                }
+            }
+        }
+        
         // Update the page
-        $stmt = $pdo->prepare("UPDATE pages SET title = ?, content = ?, slug = ?, status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE pages SET title = ?, content = ?, slug = ?, status = ?, permalink = ?, custom_permalink = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
         $stmt->execute([
             $input['title'] ?? $page['title'],
             $input['content'] ?? $page['content'],
-            $input['slug'] ?? $page['slug'],
+            $newSlug,
             $input['status'] ?? $page['status'],
+            $newPermalink,
+            $customPermalink,
             $id
         ]);
         
@@ -1290,5 +1465,445 @@ function createSlug($title) {
     }
     
     return $slug;
+}
+
+// ==================== PERMALINK ENDPOINTS ====================
+
+/**
+ * Handle permalink-related requests
+ */
+function handlePermalinks($requestMethod, $action) {
+    switch ($action) {
+        case 'settings':
+            if ($requestMethod === 'GET') {
+                getPermalinkSettings();
+            } elseif ($requestMethod === 'POST' || $requestMethod === 'PUT') {
+                updatePermalinkSettings();
+            }
+            break;
+        case 'structures':
+            getAvailableStructures();
+            break;
+        case 'preview':
+            previewPermalinkEndpoint();
+            break;
+        case 'generate':
+            regeneratePermalinks();
+            break;
+        case 'update-missing':
+            updateMissingPermalinksEndpoint();
+            break;
+        default:
+            if ($requestMethod === 'GET') {
+                getPermalinkSettings();
+            } else {
+                sendJsonResponse(['error' => 'Invalid permalink action'], 400);
+            }
+    }
+}
+
+/**
+ * Get all permalink settings
+ */
+function getPermalinkSettings() {
+    global $pdo;
+    
+    try {
+        $stmt = $pdo->query("SELECT * FROM permalink_settings ORDER BY setting_key");
+        $settings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convert to key-value format
+        $settingsMap = [];
+        foreach ($settings as $setting) {
+            $settingsMap[$setting['setting_key']] = $setting['setting_value'];
+        }
+        
+        sendJsonResponse([
+            'success' => true,
+            'settings' => $settingsMap,
+            'structures' => getPermalinkStructures()
+        ]);
+    } catch (Exception $e) {
+        sendJsonResponse(['error' => 'Failed to get permalink settings'], 500);
+    }
+}
+
+/**
+ * Update permalink settings
+ */
+function updatePermalinkSettings() {
+    global $pdo;
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input) {
+        sendJsonResponse(['error' => 'Invalid JSON data'], 400);
+    }
+    
+    try {
+        $updated = [];
+        
+        // Update each setting
+        foreach ($input as $key => $value) {
+            if (updatePermalinkSetting($key, $value)) {
+                $updated[] = $key;
+            }
+        }
+        
+        sendJsonResponse([
+            'success' => true,
+            'message' => 'Permalink settings updated',
+            'updated' => $updated
+        ]);
+    } catch (Exception $e) {
+        sendJsonResponse(['error' => 'Failed to update permalink settings: ' . $e->getMessage()], 500);
+    }
+}
+
+/**
+ * Get available permalink structures
+ */
+function getAvailableStructures() {
+    sendJsonResponse([
+        'success' => true,
+        'structures' => getPermalinkStructures()
+    ]);
+}
+
+/**
+ * Preview a permalink without saving
+ */
+function previewPermalinkEndpoint() {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input || !isset($input['title'])) {
+        sendJsonResponse(['error' => 'Title is required'], 400);
+    }
+    
+    $contentType = $input['content_type'] ?? 'post';
+    $structure = $input['structure'] ?? null;
+    
+    $data = [
+        'id' => $input['id'] ?? 0,
+        'title' => $input['title'],
+        'slug' => $input['slug'] ?? generateSlug($input['title']),
+        'created_at' => $input['created_at'] ?? date('Y-m-d H:i:s'),
+        'category_id' => $input['category_id'] ?? null,
+        'parent_id' => $input['parent_id'] ?? null
+    ];
+    
+    $permalink = previewPermalink($data, $contentType, $structure);
+    
+    sendJsonResponse([
+        'success' => true,
+        'permalink' => $permalink,
+        'full_url' => getFullUrl($permalink)
+    ]);
+}
+
+/**
+ * Regenerate permalinks for all posts/pages based on new structure
+ * Note: This only updates posts/pages that don't have custom permalinks
+ */
+function regeneratePermalinks() {
+    global $pdo;
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    $contentType = $input['content_type'] ?? 'all'; // 'post', 'page', or 'all'
+    $newStructure = $input['structure'] ?? null;
+    $preserveExisting = $input['preserve_existing'] ?? true;
+    
+    $updated = 0;
+    $redirectsCreated = 0;
+    
+    try {
+        // Update posts
+        if ($contentType === 'post' || $contentType === 'all') {
+            if ($preserveExisting) {
+                // Only update posts without custom permalinks
+                $postsStmt = $pdo->query("SELECT * FROM posts WHERE custom_permalink IS NULL OR custom_permalink = ''");
+            } else {
+                $postsStmt = $pdo->query("SELECT * FROM posts");
+            }
+            $posts = $postsStmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $structure = $newStructure ?? getPermalinkSetting('post_permalink_structure', '/%year%/%month%/%postname%/');
+            
+            foreach ($posts as $post) {
+                $oldPermalink = $post['permalink'];
+                $newPermalink = generatePostPermalink($post, $structure);
+                $newPermalink = ensureUniquePermalink($newPermalink, 'post', $post['id']);
+                
+                // Create redirect if URL changed
+                if (!empty($oldPermalink) && $oldPermalink !== $newPermalink) {
+                    $shouldRedirect = getPermalinkSetting('redirect_old_urls', '1') === '1';
+                    if ($shouldRedirect) {
+                        addUrlRedirect($oldPermalink, $newPermalink, 'post', $post['id']);
+                        $redirectsCreated++;
+                    }
+                }
+                
+                // Update post
+                $updateStmt = $pdo->prepare("UPDATE posts SET permalink = ?, permalink_structure = ? WHERE id = ?");
+                $updateStmt->execute([$newPermalink, $structure, $post['id']]);
+                $updated++;
+            }
+        }
+        
+        // Update pages
+        if ($contentType === 'page' || $contentType === 'all') {
+            if ($preserveExisting) {
+                $pagesStmt = $pdo->query("SELECT * FROM pages WHERE custom_permalink IS NULL OR custom_permalink = ''");
+            } else {
+                $pagesStmt = $pdo->query("SELECT * FROM pages");
+            }
+            $pages = $pagesStmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($pages as $page) {
+                $oldPermalink = $page['permalink'];
+                $newPermalink = generatePagePermalink($page);
+                $newPermalink = ensureUniquePermalink($newPermalink, 'page', $page['id']);
+                
+                // Create redirect if URL changed
+                if (!empty($oldPermalink) && $oldPermalink !== $newPermalink) {
+                    $shouldRedirect = getPermalinkSetting('redirect_old_urls', '1') === '1';
+                    if ($shouldRedirect) {
+                        addUrlRedirect($oldPermalink, $newPermalink, 'page', $page['id']);
+                        $redirectsCreated++;
+                    }
+                }
+                
+                // Update page
+                $updateStmt = $pdo->prepare("UPDATE pages SET permalink = ? WHERE id = ?");
+                $updateStmt->execute([$newPermalink, $page['id']]);
+                $updated++;
+            }
+        }
+        
+        sendJsonResponse([
+            'success' => true,
+            'message' => "Permalinks regenerated successfully",
+            'updated' => $updated,
+            'redirects_created' => $redirectsCreated
+        ]);
+    } catch (Exception $e) {
+        sendJsonResponse(['error' => 'Failed to regenerate permalinks: ' . $e->getMessage()], 500);
+    }
+}
+
+/**
+ * Update posts/pages that don't have permalinks yet
+ */
+function updateMissingPermalinksEndpoint() {
+    $count = updateMissingPermalinks();
+    
+    if ($count === false) {
+        sendJsonResponse(['error' => 'Failed to update missing permalinks'], 500);
+    }
+    
+    sendJsonResponse([
+        'success' => true,
+        'message' => "Updated $count items with missing permalinks",
+        'updated' => $count
+    ]);
+}
+
+// ==================== URL RESOLUTION ====================
+
+/**
+ * Handle URL resolution requests
+ */
+function handleUrlResolve() {
+    $url = $_GET['url'] ?? null;
+    
+    if (!$url) {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $url = $input['url'] ?? null;
+    }
+    
+    if (!$url) {
+        sendJsonResponse(['error' => 'URL is required'], 400);
+    }
+    
+    $result = resolveUrl($url);
+    
+    sendJsonResponse([
+        'success' => true,
+        'result' => $result
+    ]);
+}
+
+// ==================== URL REDIRECTS ====================
+
+/**
+ * Handle redirect management requests
+ */
+function handleRedirects($requestMethod, $id) {
+    switch ($requestMethod) {
+        case 'GET':
+            if ($id) {
+                getRedirect($id);
+            } else {
+                getRedirects();
+            }
+            break;
+        case 'POST':
+            createRedirect();
+            break;
+        case 'PUT':
+            if ($id) {
+                updateRedirect($id);
+            } else {
+                sendJsonResponse(['error' => 'ID required for update'], 400);
+            }
+            break;
+        case 'DELETE':
+            if ($id) {
+                deleteRedirectEndpoint($id);
+            } else {
+                sendJsonResponse(['error' => 'ID required for delete'], 400);
+            }
+            break;
+        default:
+            sendJsonResponse(['error' => 'Method not allowed'], 405);
+    }
+}
+
+/**
+ * Get all redirects
+ */
+function getRedirects() {
+    global $pdo;
+    
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $offset = ($page - 1) * $limit;
+    
+    try {
+        // Count total redirects
+        $countStmt = $pdo->query("SELECT COUNT(*) as total FROM url_redirects");
+        $totalItems = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+        
+        // Get redirects with pagination
+        $redirects = getUrlRedirects($limit, $offset);
+        
+        sendJsonResponse([
+            'success' => true,
+            'redirects' => $redirects,
+            'pagination' => [
+                'current_page' => $page,
+                'per_page' => $limit,
+                'total_items' => $totalItems,
+                'total_pages' => ceil($totalItems / $limit)
+            ]
+        ]);
+    } catch (Exception $e) {
+        sendJsonResponse(['error' => 'Failed to get redirects'], 500);
+    }
+}
+
+/**
+ * Get single redirect
+ */
+function getRedirect($id) {
+    global $pdo;
+    
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM url_redirects WHERE id = ?");
+        $stmt->execute([$id]);
+        $redirect = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$redirect) {
+            sendJsonResponse(['error' => 'Redirect not found'], 404);
+        }
+        
+        sendJsonResponse([
+            'success' => true,
+            'redirect' => $redirect
+        ]);
+    } catch (Exception $e) {
+        sendJsonResponse(['error' => 'Failed to get redirect'], 500);
+    }
+}
+
+/**
+ * Create new redirect
+ */
+function createRedirect() {
+    global $pdo;
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input || !isset($input['old_url']) || !isset($input['new_url'])) {
+        sendJsonResponse(['error' => 'old_url and new_url are required'], 400);
+    }
+    
+    $oldUrl = sanitizePermalink($input['old_url']);
+    $newUrl = sanitizePermalink($input['new_url']);
+    $redirectType = $input['redirect_type'] ?? 301;
+    $contentType = $input['content_type'] ?? null;
+    $contentId = $input['content_id'] ?? null;
+    
+    if (addUrlRedirect($oldUrl, $newUrl, $contentType, $contentId, $redirectType)) {
+        sendJsonResponse([
+            'success' => true,
+            'message' => 'Redirect created successfully'
+        ]);
+    } else {
+        sendJsonResponse(['error' => 'Failed to create redirect'], 500);
+    }
+}
+
+/**
+ * Update redirect
+ */
+function updateRedirect($id) {
+    global $pdo;
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input) {
+        sendJsonResponse(['error' => 'Invalid JSON data'], 400);
+    }
+    
+    try {
+        // Check if exists
+        $checkStmt = $pdo->prepare("SELECT * FROM url_redirects WHERE id = ?");
+        $checkStmt->execute([$id]);
+        $redirect = $checkStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$redirect) {
+            sendJsonResponse(['error' => 'Redirect not found'], 404);
+        }
+        
+        $oldUrl = isset($input['old_url']) ? sanitizePermalink($input['old_url']) : $redirect['old_url'];
+        $newUrl = isset($input['new_url']) ? sanitizePermalink($input['new_url']) : $redirect['new_url'];
+        $redirectType = $input['redirect_type'] ?? $redirect['redirect_type'];
+        
+        $updateStmt = $pdo->prepare("UPDATE url_redirects SET old_url = ?, new_url = ?, redirect_type = ? WHERE id = ?");
+        $updateStmt->execute([$oldUrl, $newUrl, $redirectType, $id]);
+        
+        sendJsonResponse([
+            'success' => true,
+            'message' => 'Redirect updated successfully'
+        ]);
+    } catch (Exception $e) {
+        sendJsonResponse(['error' => 'Failed to update redirect: ' . $e->getMessage()], 500);
+    }
+}
+
+/**
+ * Delete redirect
+ */
+function deleteRedirectEndpoint($id) {
+    if (deleteUrlRedirect($id)) {
+        sendJsonResponse([
+            'success' => true,
+            'message' => 'Redirect deleted successfully'
+        ]);
+    } else {
+        sendJsonResponse(['error' => 'Failed to delete redirect'], 500);
+    }
 }
 ?>
