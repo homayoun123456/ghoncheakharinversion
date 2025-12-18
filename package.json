@@ -1,7 +1,7 @@
 {
   "name": "ghoncheye-lalehzar-cms",
   "version": "1.0.0",
-  "description": "Ghoncheye Lalehzar CMS - Persian Rose Buds Export Management System with Shop",
+  "description": "Ghoncheye Lalehzar CMS - Persian Rose Buds Export Management System with Shop and Notifications",
   "main": "api-server.js",
   "scripts": {
     "start": "node api-server.js",
@@ -18,7 +18,12 @@
     "export",
     "shop",
     "zarinpal",
-    "payment"
+    "payment",
+    "sms",
+    "telegram",
+    "whatsapp",
+    "faraz-sms",
+    "notification"
   ],
   "author": "Ghoncheye Lalehzar",
   "license": "MIT",

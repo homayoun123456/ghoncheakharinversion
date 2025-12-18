@@ -1,11 +1,18 @@
 /**
  * Shop API Server with ZarinPal Payment Integration
  * فروشگاه غنچه لاله زار - API سرور پرداخت
+ * 
+ * شامل:
+ * - درگاه پرداخت زرین پال
+ * - اطلاع‌رسانی پیامکی (فراز اس ام اس)
+ * - اطلاع‌رسانی تلگرام
+ * - اطلاع‌رسانی واتساپ
  */
 
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { notificationService } = require('./notification-service');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -156,6 +163,11 @@ app.post('/api/payment/request', async (req, res) => {
             const order = formatOrder(orderData, authority);
             orders.push(order);
             
+            // Send new order notification (async - don't wait)
+            notificationService.notifyNewOrder(order).catch(err => {
+                console.error('Notification error:', err);
+            });
+            
             return res.json({
                 success: true,
                 authority: authority,
@@ -232,6 +244,11 @@ app.post('/api/payment/verify', async (req, res) => {
             order.status = 'paid';
             order.refId = refId.toString();
             order.updatedAt = new Date().toISOString();
+            
+            // Send payment success notification (async - don't wait)
+            notificationService.notifyPaymentSuccess(order, refId.toString()).catch(err => {
+                console.error('Payment notification error:', err);
+            });
             
             return res.json({
                 success: true,
@@ -354,8 +371,8 @@ app.get('/api/orders/track/:authority', (req, res) => {
  * PUT /api/orders/:id/status
  * Update order status (for admin)
  */
-app.put('/api/orders/:id/status', (req, res) => {
-    const { status } = req.body;
+app.put('/api/orders/:id/status', async (req, res) => {
+    const { status, trackingCode } = req.body;
     const order = orders.find(o => o.id === req.params.id);
     
     if (!order) {
@@ -373,12 +390,75 @@ app.put('/api/orders/:id/status', (req, res) => {
         });
     }
     
+    const previousStatus = order.status;
     order.status = status;
     order.updatedAt = new Date().toISOString();
     
+    // Add tracking code if provided
+    if (trackingCode) {
+        order.trackingCode = trackingCode;
+    }
+    
+    // Send notifications based on status change
+    let notificationResult = null;
+    
+    if (status === 'shipped' && previousStatus !== 'shipped') {
+        // Order shipped - notify customer and manager
+        notificationResult = await notificationService.notifyOrderShipped(
+            order, 
+            trackingCode || 'بدون کد رهگیری'
+        );
+    } else if (status === 'delivered' && previousStatus !== 'delivered') {
+        // Order delivered - notify customer
+        if (order.customer?.phone) {
+            const msg = `سفارش ${order.id} تحویل داده شد.\nممنون از خرید شما\nغنچه لاله زار`;
+            notificationResult = await notificationService.sendSMS(order.customer.phone, msg);
+        }
+    }
+    
     res.json({
         success: true,
-        data: order
+        data: order,
+        notification: notificationResult
+    });
+});
+
+/**
+ * POST /api/orders/:id/ship
+ * Mark order as shipped with tracking code
+ */
+app.post('/api/orders/:id/ship', async (req, res) => {
+    const { trackingCode, carrier } = req.body;
+    const order = orders.find(o => o.id === req.params.id);
+    
+    if (!order) {
+        return res.status(404).json({
+            success: false,
+            message: 'سفارش یافت نشد'
+        });
+    }
+    
+    if (!trackingCode) {
+        return res.status(400).json({
+            success: false,
+            message: 'کد رهگیری الزامی است'
+        });
+    }
+    
+    // Update order
+    order.status = 'shipped';
+    order.trackingCode = trackingCode;
+    order.carrier = carrier || 'پست پیشتاز';
+    order.shippedAt = new Date().toISOString();
+    order.updatedAt = new Date().toISOString();
+    
+    // Send shipping notification
+    const notificationResult = await notificationService.notifyOrderShipped(order, trackingCode);
+    
+    res.json({
+        success: true,
+        data: order,
+        notification: notificationResult
     });
 });
 
@@ -391,7 +471,209 @@ app.get('/api/health', (req, res) => {
         status: 'ok',
         service: 'ghoncheye-shop-api',
         timestamp: new Date().toISOString(),
-        zarinpalMode: CONFIG.zarinpal.sandbox ? 'sandbox' : 'production'
+        zarinpalMode: CONFIG.zarinpal.sandbox ? 'sandbox' : 'production',
+        notifications: notificationService.getStatus()
+    });
+});
+
+// ==================== NOTIFICATION ENDPOINTS ====================
+
+/**
+ * GET /api/notifications/status
+ * Get notification service status
+ */
+app.get('/api/notifications/status', (req, res) => {
+    res.json({
+        success: true,
+        data: notificationService.getStatus()
+    });
+});
+
+/**
+ * GET /api/notifications/logs
+ * Get notification logs
+ */
+app.get('/api/notifications/logs', (req, res) => {
+    const limit = parseInt(req.query.limit) || 50;
+    res.json({
+        success: true,
+        data: notificationService.getLogs(limit)
+    });
+});
+
+/**
+ * POST /api/notifications/test/sms
+ * Test SMS sending
+ */
+app.post('/api/notifications/test/sms', async (req, res) => {
+    const { phone, message } = req.body;
+    
+    if (!phone) {
+        return res.status(400).json({
+            success: false,
+            message: 'شماره تلفن الزامی است'
+        });
+    }
+    
+    const result = await notificationService.sendSMS(
+        phone, 
+        message || 'پیام تست از فروشگاه غنچه لاله زار'
+    );
+    
+    res.json({
+        success: result.success,
+        data: result
+    });
+});
+
+/**
+ * POST /api/notifications/test/telegram
+ * Test Telegram sending
+ */
+app.post('/api/notifications/test/telegram', async (req, res) => {
+    const { chatId, message } = req.body;
+    
+    if (!chatId) {
+        return res.status(400).json({
+            success: false,
+            message: 'Chat ID الزامی است'
+        });
+    }
+    
+    const result = await notificationService.sendTelegram(
+        chatId,
+        message || '🧪 پیام تست از فروشگاه غنچه لاله زار'
+    );
+    
+    res.json({
+        success: result.success,
+        data: result
+    });
+});
+
+/**
+ * POST /api/notifications/test/whatsapp
+ * Test WhatsApp - returns link for manual sending
+ */
+app.post('/api/notifications/test/whatsapp', async (req, res) => {
+    const { phone, message } = req.body;
+    
+    if (!phone) {
+        return res.status(400).json({
+            success: false,
+            message: 'شماره تلفن الزامی است'
+        });
+    }
+    
+    const result = await notificationService.sendWhatsApp(
+        phone,
+        message || 'پیام تست از فروشگاه غنچه لاله زار'
+    );
+    
+    res.json({
+        success: result.success,
+        data: result
+    });
+});
+
+/**
+ * POST /api/notifications/send
+ * Send custom notification
+ */
+app.post('/api/notifications/send', async (req, res) => {
+    const { channels, recipients, message } = req.body;
+    
+    if (!message) {
+        return res.status(400).json({
+            success: false,
+            message: 'متن پیام الزامی است'
+        });
+    }
+    
+    const results = {
+        sms: [],
+        telegram: [],
+        whatsapp: []
+    };
+    
+    // Send via SMS
+    if (channels?.includes('sms') && recipients?.sms) {
+        for (const phone of recipients.sms) {
+            const result = await notificationService.sendSMS(phone, message);
+            results.sms.push({ phone, ...result });
+        }
+    }
+    
+    // Send via Telegram
+    if (channels?.includes('telegram') && recipients?.telegram) {
+        for (const chatId of recipients.telegram) {
+            const result = await notificationService.sendTelegram(chatId, message);
+            results.telegram.push({ chatId, ...result });
+        }
+    }
+    
+    // Send via WhatsApp
+    if (channels?.includes('whatsapp') && recipients?.whatsapp) {
+        for (const phone of recipients.whatsapp) {
+            const result = await notificationService.sendWhatsApp(phone, message);
+            results.whatsapp.push({ phone, ...result });
+        }
+    }
+    
+    res.json({
+        success: true,
+        data: results
+    });
+});
+
+/**
+ * POST /api/notifications/config
+ * Update notification configuration
+ */
+app.post('/api/notifications/config', (req, res) => {
+    const { farazSMS, telegram, whatsapp, recipients } = req.body;
+    
+    const updates = {};
+    
+    if (farazSMS) updates.farazSMS = farazSMS;
+    if (telegram) updates.telegram = telegram;
+    if (whatsapp) updates.whatsapp = whatsapp;
+    if (recipients) updates.recipients = recipients;
+    
+    notificationService.updateConfig(updates);
+    
+    res.json({
+        success: true,
+        message: 'تنظیمات بروزرسانی شد',
+        data: notificationService.getStatus()
+    });
+});
+
+/**
+ * POST /api/notifications/daily-report
+ * Send daily report manually
+ */
+app.post('/api/notifications/daily-report', async (req, res) => {
+    // Calculate report data from orders
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const todayOrders = orders.filter(o => new Date(o.createdAt) >= today);
+    const paidOrders = todayOrders.filter(o => o.status === 'paid');
+    const pendingOrders = todayOrders.filter(o => o.status === 'pending');
+    
+    const reportData = {
+        orderCount: todayOrders.length,
+        totalSales: paidOrders.reduce((sum, o) => sum + (o.total || 0), 0),
+        paidCount: paidOrders.length,
+        pendingCount: pendingOrders.length
+    };
+    
+    const result = await notificationService.sendDailyReport(reportData);
+    
+    res.json({
+        success: result.success,
+        data: { reportData, notificationResult: result }
     });
 });
 
