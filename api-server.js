@@ -479,47 +479,545 @@ app.get('/api/users/:id', isAuthenticated, (req, res) => {
   });
 });
 
-// ==================== MEDIA ENDPOINTS ====================
+// ==================== MEDIA ENDPOINTS (SEO OPTIMIZED) ====================
 
 /**
  * GET /api/media
- * Get all media
+ * Get all media with SEO metadata
  */
 app.get('/api/media', isAuthenticated, (req, res) => {
+  const { type, limit, offset, search } = req.query;
+  
+  let filteredMedia = [...database.media];
+  
+  // Filter by type (image/video)
+  if (type) {
+    filteredMedia = filteredMedia.filter(m => m.media_type === type);
+  }
+  
+  // Search in title, alt_text, description
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filteredMedia = filteredMedia.filter(m => 
+      (m.title && m.title.toLowerCase().includes(searchLower)) ||
+      (m.alt_text && m.alt_text.toLowerCase().includes(searchLower)) ||
+      (m.description && m.description.toLowerCase().includes(searchLower))
+    );
+  }
+  
+  // Pagination
+  const total = filteredMedia.length;
+  const startIndex = parseInt(offset) || 0;
+  const endIndex = startIndex + (parseInt(limit) || 50);
+  filteredMedia = filteredMedia.slice(startIndex, endIndex);
+  
   res.json({
     success: true,
-    data: database.media
+    data: filteredMedia,
+    pagination: {
+      total,
+      offset: startIndex,
+      limit: parseInt(limit) || 50
+    }
+  });
+});
+
+/**
+ * GET /api/media/:id
+ * Get single media with full SEO data
+ */
+app.get('/api/media/:id', isAuthenticated, (req, res) => {
+  const media = database.media.find(m => m.id === parseInt(req.params.id));
+  
+  if (!media) {
+    return res.status(404).json({ error: 'Media not found' });
+  }
+  
+  res.json({
+    success: true,
+    data: media
   });
 });
 
 /**
  * POST /api/media/upload
- * Upload media file (for demo, just store metadata)
+ * Upload media file with comprehensive SEO metadata
  */
 app.post('/api/media/upload', isAuthenticated, (req, res) => {
-  const { filename, alt_text, caption } = req.body;
+  const { 
+    filename, 
+    media_type,      // 'image' or 'video'
+    // SEO Fields
+    alt_text,        // Alternative text (required for images)
+    title,           // Title attribute
+    description,     // Description for search engines
+    caption,         // Caption displayed below media
+    // Image-specific SEO
+    width,
+    height,
+    srcset,          // Responsive image srcset
+    sizes,           // Responsive sizes attribute
+    // Video-specific SEO
+    duration,        // Video duration (ISO 8601)
+    thumbnail_url,   // Video thumbnail
+    transcript,      // Video transcript for accessibility/SEO
+    captions_url,    // Captions/subtitles URL
+    // Schema.org data
+    author,
+    date_published,
+    keywords,
+    content_url,
+    embed_url
+  } = req.body;
   
   if (!filename) {
     return res.status(400).json({ error: 'Filename is required' });
   }
   
+  // Validate alt_text for images (SEO best practice)
+  if (media_type === 'image' && !alt_text) {
+    return res.status(400).json({ 
+      error: 'Alt text is required for images (SEO requirement)',
+      seo_tip: 'Alt text helps search engines understand image content and improves accessibility'
+    });
+  }
+  
+  // Generate SEO-friendly filename
+  const seoFilename = generateSEOFilename(filename, title);
+  
   const newMedia = {
     id: Math.max(...database.media.map(m => m.id || 0), 0) + 1,
-    filename,
-    filepath: `/uploads/${filename}`,
+    filename: seoFilename,
+    original_filename: filename,
+    filepath: `/uploads/${seoFilename}`,
+    media_type: media_type || detectMediaType(filename),
+    
+    // SEO Metadata
     alt_text: alt_text || '',
+    title: title || '',
+    description: description || '',
     caption: caption || '',
+    keywords: keywords || [],
+    
+    // Image-specific
+    width: width || null,
+    height: height || null,
+    srcset: srcset || null,
+    sizes: sizes || '(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw',
+    
+    // Video-specific
+    duration: duration || null,
+    thumbnail_url: thumbnail_url || null,
+    transcript: transcript || null,
+    captions_url: captions_url || null,
+    
+    // Schema.org data
+    schema_data: generateSchemaData({
+      media_type,
+      title,
+      description,
+      content_url,
+      thumbnail_url,
+      duration,
+      author,
+      date_published
+    }),
+    
+    // Metadata
     uploaded_by: req.user.id,
-    created_at: new Date().toISOString()
+    author: author || req.user.username,
+    date_published: date_published || new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    
+    // SEO Score
+    seo_score: calculateSEOScore({
+      alt_text,
+      title,
+      description,
+      keywords,
+      media_type,
+      transcript
+    })
   };
   
   database.media.push(newMedia);
   
   res.status(201).json({
     success: true,
-    data: newMedia
+    data: newMedia,
+    seo_tips: generateSEOTips(newMedia)
   });
 });
+
+/**
+ * PUT /api/media/:id
+ * Update media SEO metadata
+ */
+app.put('/api/media/:id', isAuthenticated, (req, res) => {
+  const media = database.media.find(m => m.id === parseInt(req.params.id));
+  
+  if (!media) {
+    return res.status(404).json({ error: 'Media not found' });
+  }
+  
+  // Update SEO fields
+  const seoFields = [
+    'alt_text', 'title', 'description', 'caption', 'keywords',
+    'srcset', 'sizes', 'duration', 'thumbnail_url', 'transcript',
+    'captions_url'
+  ];
+  
+  seoFields.forEach(field => {
+    if (req.body[field] !== undefined) {
+      media[field] = req.body[field];
+    }
+  });
+  
+  media.updated_at = new Date().toISOString();
+  
+  // Recalculate SEO score
+  media.seo_score = calculateSEOScore({
+    alt_text: media.alt_text,
+    title: media.title,
+    description: media.description,
+    keywords: media.keywords,
+    media_type: media.media_type,
+    transcript: media.transcript
+  });
+  
+  // Regenerate Schema data
+  media.schema_data = generateSchemaData({
+    media_type: media.media_type,
+    title: media.title,
+    description: media.description,
+    content_url: media.filepath,
+    thumbnail_url: media.thumbnail_url,
+    duration: media.duration,
+    author: media.author,
+    date_published: media.date_published
+  });
+  
+  res.json({
+    success: true,
+    data: media,
+    seo_tips: generateSEOTips(media)
+  });
+});
+
+/**
+ * DELETE /api/media/:id
+ * Delete media
+ */
+app.delete('/api/media/:id', isAuthenticated, (req, res) => {
+  const index = database.media.findIndex(m => m.id === parseInt(req.params.id));
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Media not found' });
+  }
+  
+  const deleted = database.media.splice(index, 1);
+  
+  res.json({
+    success: true,
+    message: 'Media deleted',
+    data: deleted[0]
+  });
+});
+
+/**
+ * GET /api/media/:id/schema
+ * Get Schema.org structured data for media
+ */
+app.get('/api/media/:id/schema', (req, res) => {
+  const media = database.media.find(m => m.id === parseInt(req.params.id));
+  
+  if (!media) {
+    return res.status(404).json({ error: 'Media not found' });
+  }
+  
+  res.json({
+    success: true,
+    data: media.schema_data
+  });
+});
+
+/**
+ * GET /api/media/sitemap
+ * Generate media sitemap entries for SEO
+ */
+app.get('/api/media/sitemap', (req, res) => {
+  const sitemapEntries = database.media.map(media => {
+    if (media.media_type === 'image') {
+      return {
+        type: 'image',
+        loc: media.filepath,
+        title: media.title,
+        caption: media.caption,
+        geo_location: 'لاله زار، کرمان، ایران',
+        license: 'https://ghoncheye-lalehzar.com/license'
+      };
+    } else if (media.media_type === 'video') {
+      return {
+        type: 'video',
+        loc: media.filepath,
+        thumbnail_loc: media.thumbnail_url,
+        title: media.title,
+        description: media.description,
+        duration: media.duration,
+        publication_date: media.date_published
+      };
+    }
+    return null;
+  }).filter(Boolean);
+  
+  res.json({
+    success: true,
+    data: sitemapEntries
+  });
+});
+
+/**
+ * POST /api/media/bulk-update-seo
+ * Bulk update SEO metadata for multiple media items
+ */
+app.post('/api/media/bulk-update-seo', isAuthenticated, (req, res) => {
+  const { updates } = req.body;
+  
+  if (!Array.isArray(updates)) {
+    return res.status(400).json({ error: 'Updates must be an array' });
+  }
+  
+  const results = updates.map(update => {
+    const media = database.media.find(m => m.id === update.id);
+    
+    if (!media) {
+      return { id: update.id, success: false, error: 'Not found' };
+    }
+    
+    // Update fields
+    if (update.alt_text) media.alt_text = update.alt_text;
+    if (update.title) media.title = update.title;
+    if (update.description) media.description = update.description;
+    if (update.keywords) media.keywords = update.keywords;
+    
+    media.updated_at = new Date().toISOString();
+    media.seo_score = calculateSEOScore(media);
+    
+    return { id: update.id, success: true, seo_score: media.seo_score };
+  });
+  
+  res.json({
+    success: true,
+    data: results
+  });
+});
+
+// ==================== MEDIA HELPER FUNCTIONS ====================
+
+/**
+ * Detect media type from filename
+ */
+function detectMediaType(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+  const videoExts = ['mp4', 'webm', 'ogg', 'avi', 'mov'];
+  
+  if (imageExts.includes(ext)) return 'image';
+  if (videoExts.includes(ext)) return 'video';
+  return 'other';
+}
+
+/**
+ * Generate SEO-friendly filename
+ */
+function generateSEOFilename(originalFilename, title) {
+  if (!title) return originalFilename;
+  
+  const ext = originalFilename.split('.').pop();
+  const seoName = title
+    .toLowerCase()
+    .replace(/[^\w\s\u0600-\u06FF-]/g, '')  // Keep Persian characters
+    .replace(/\s+/g, '-')
+    .substring(0, 50);
+  
+  return `${seoName}-${Date.now()}.${ext}`;
+}
+
+/**
+ * Calculate SEO score for media
+ */
+function calculateSEOScore(media) {
+  let score = 0;
+  const maxScore = 100;
+  
+  // Alt text (30 points for images)
+  if (media.media_type === 'image') {
+    if (media.alt_text) {
+      score += 15;
+      if (media.alt_text.length >= 10 && media.alt_text.length <= 125) {
+        score += 15;  // Optimal length
+      }
+    }
+  }
+  
+  // Title (20 points)
+  if (media.title) {
+    score += 10;
+    if (media.title.length >= 10 && media.title.length <= 70) {
+      score += 10;  // Optimal length
+    }
+  }
+  
+  // Description (25 points)
+  if (media.description) {
+    score += 12;
+    if (media.description.length >= 50 && media.description.length <= 160) {
+      score += 13;  // Optimal length
+    }
+  }
+  
+  // Keywords (15 points)
+  if (media.keywords && media.keywords.length > 0) {
+    score += 8;
+    if (media.keywords.length >= 3 && media.keywords.length <= 10) {
+      score += 7;  // Optimal number
+    }
+  }
+  
+  // Video-specific: Transcript (10 points)
+  if (media.media_type === 'video' && media.transcript) {
+    score += 10;
+  }
+  
+  return Math.min(score, maxScore);
+}
+
+/**
+ * Generate Schema.org structured data
+ */
+function generateSchemaData(options) {
+  const baseSchema = {
+    "@context": "https://schema.org"
+  };
+  
+  if (options.media_type === 'image') {
+    return {
+      ...baseSchema,
+      "@type": "ImageObject",
+      "name": options.title || '',
+      "description": options.description || '',
+      "contentUrl": options.content_url || '',
+      "author": {
+        "@type": "Organization",
+        "name": options.author || "غنچه لاله زار"
+      },
+      "datePublished": options.date_published || new Date().toISOString()
+    };
+  } else if (options.media_type === 'video') {
+    return {
+      ...baseSchema,
+      "@type": "VideoObject",
+      "name": options.title || '',
+      "description": options.description || '',
+      "thumbnailUrl": options.thumbnail_url || '',
+      "contentUrl": options.content_url || '',
+      "duration": options.duration || '',
+      "uploadDate": options.date_published || new Date().toISOString(),
+      "publisher": {
+        "@type": "Organization",
+        "name": "غنچه لاله زار",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ghoncheye-lalehzar.com/assets/logo.png"
+        }
+      }
+    };
+  }
+  
+  return baseSchema;
+}
+
+/**
+ * Generate SEO improvement tips
+ */
+function generateSEOTips(media) {
+  const tips = [];
+  
+  // Alt text tips
+  if (!media.alt_text) {
+    tips.push({
+      field: 'alt_text',
+      priority: 'high',
+      tip_fa: 'متن جایگزین (Alt Text) برای تصاویر الزامی است. این متن به موتورهای جستجو و کاربران نابینا کمک می‌کند.',
+      tip_en: 'Alt text is required for images. It helps search engines and visually impaired users.'
+    });
+  } else if (media.alt_text.length < 10) {
+    tips.push({
+      field: 'alt_text',
+      priority: 'medium',
+      tip_fa: 'متن جایگزین کوتاه است. توصیه می‌شود بین ۱۰ تا ۱۲۵ کاراکتر باشد.',
+      tip_en: 'Alt text is too short. Recommended length is 10-125 characters.'
+    });
+  } else if (media.alt_text.length > 125) {
+    tips.push({
+      field: 'alt_text',
+      priority: 'low',
+      tip_fa: 'متن جایگزین طولانی است. سعی کنید آن را به کمتر از ۱۲۵ کاراکتر کاهش دهید.',
+      tip_en: 'Alt text is too long. Try to keep it under 125 characters.'
+    });
+  }
+  
+  // Title tips
+  if (!media.title) {
+    tips.push({
+      field: 'title',
+      priority: 'medium',
+      tip_fa: 'عنوان برای بهبود سئو توصیه می‌شود.',
+      tip_en: 'Title is recommended for better SEO.'
+    });
+  }
+  
+  // Description tips
+  if (!media.description) {
+    tips.push({
+      field: 'description',
+      priority: 'medium',
+      tip_fa: 'توضیحات به موتورهای جستجو کمک می‌کند محتوای رسانه را درک کنند.',
+      tip_en: 'Description helps search engines understand media content.'
+    });
+  }
+  
+  // Video-specific tips
+  if (media.media_type === 'video') {
+    if (!media.thumbnail_url) {
+      tips.push({
+        field: 'thumbnail_url',
+        priority: 'high',
+        tip_fa: 'تصویر پیش‌نمایش (Thumbnail) برای ویدیوها ضروری است.',
+        tip_en: 'Thumbnail is essential for videos.'
+      });
+    }
+    if (!media.transcript) {
+      tips.push({
+        field: 'transcript',
+        priority: 'medium',
+        tip_fa: 'متن پیاده‌شده ویدیو به دسترسی‌پذیری و سئو کمک می‌کند.',
+        tip_en: 'Video transcript improves accessibility and SEO.'
+      });
+    }
+    if (!media.captions_url) {
+      tips.push({
+        field: 'captions_url',
+        priority: 'medium',
+        tip_fa: 'زیرنویس برای دسترسی‌پذیری و سئو توصیه می‌شود.',
+        tip_en: 'Captions are recommended for accessibility and SEO.'
+      });
+    }
+  }
+  
+  return tips;
+}
 
 // ==================== HEALTH CHECK ====================
 

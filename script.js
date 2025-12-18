@@ -797,3 +797,725 @@ function throttle(func, limit) {
 document.addEventListener('DOMContentLoaded', init);
 // Add the CSS animations early to avoid FOUC
 addCSSAnimations();
+
+// ==========================================
+// Media Gallery with SEO Optimization
+// ==========================================
+
+// Media Gallery Class
+class MediaGallery {
+    constructor() {
+        this.mediaItems = [];
+        this.currentIndex = 0;
+        this.lightbox = null;
+        this.filterButtons = null;
+        this.mediaGrid = null;
+        this.isLightboxOpen = false;
+        
+        this.init();
+    }
+    
+    init() {
+        // Cache DOM elements
+        this.lightbox = document.getElementById('media-lightbox');
+        this.filterButtons = document.querySelectorAll('.filter-btn');
+        this.mediaGrid = document.querySelector('.media-grid');
+        this.loadMoreBtn = document.getElementById('load-more-media');
+        
+        if (!this.mediaGrid) return;
+        
+        // Initialize components
+        this.initializeMediaItems();
+        this.initializeFilters();
+        this.initializeLightbox();
+        this.initializeLazyLoadingMedia();
+        this.initializeVideoPlayers();
+        this.initializeKeyboardNavigation();
+        this.initializeLoadMore();
+        
+        // Track media views for analytics
+        this.initializeAnalytics();
+    }
+    
+    // Initialize media items with SEO data
+    initializeMediaItems() {
+        const items = this.mediaGrid.querySelectorAll('.media-item');
+        
+        items.forEach((item, index) => {
+            const type = item.dataset.type;
+            const img = item.querySelector('.media-image');
+            const video = item.querySelector('.media-video');
+            const title = item.querySelector('.media-info h3')?.textContent || '';
+            const description = item.querySelector('meta[itemprop="description"]')?.content || '';
+            const altText = img?.alt || '';
+            
+            this.mediaItems.push({
+                element: item,
+                type,
+                index,
+                title,
+                description,
+                altText,
+                imageSrc: img?.dataset?.src || img?.src,
+                videoSrc: video?.querySelector('source')?.dataset?.src,
+                loaded: false
+            });
+        });
+    }
+    
+    // Filter functionality
+    initializeFilters() {
+        if (!this.filterButtons) return;
+        
+        this.filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.handleFilter(e.currentTarget);
+            });
+        });
+    }
+    
+    handleFilter(button) {
+        const filter = button.dataset.filter;
+        
+        // Update active state
+        this.filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        // Filter items with animation
+        this.mediaItems.forEach((item, index) => {
+            const element = item.element;
+            
+            if (filter === 'all' || item.type === filter) {
+                element.classList.remove('hidden');
+                element.style.animationDelay = `${index * 0.1}s`;
+            } else {
+                element.classList.add('hidden');
+            }
+        });
+        
+        // Update Schema.org data for filtered view
+        this.updateSchemaForFilter(filter);
+    }
+    
+    // Update Schema.org structured data based on filter
+    updateSchemaForFilter(filter) {
+        // This helps search engines understand the current view
+        const gallerySchema = document.querySelector('script[type="application/ld+json"]');
+        if (gallerySchema) {
+            try {
+                const schema = JSON.parse(gallerySchema.textContent);
+                if (schema['@type'] === 'ImageGallery') {
+                    // Update filter info (for analytics/tracking purposes)
+                    console.log('Gallery filtered:', filter);
+                }
+            } catch (e) {
+                // Schema parsing error, ignore
+            }
+        }
+    }
+    
+    // Lightbox functionality
+    initializeLightbox() {
+        if (!this.lightbox) return;
+        
+        const zoomButtons = document.querySelectorAll('.media-zoom-btn');
+        const closeBtn = this.lightbox.querySelector('.lightbox-close');
+        const prevBtn = this.lightbox.querySelector('.lightbox-prev');
+        const nextBtn = this.lightbox.querySelector('.lightbox-next');
+        const overlay = this.lightbox.querySelector('.lightbox-overlay');
+        
+        // Open lightbox
+        zoomButtons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                this.openLightbox(parseInt(btn.dataset.index) || index);
+            });
+        });
+        
+        // Close lightbox
+        closeBtn?.addEventListener('click', () => this.closeLightbox());
+        overlay?.addEventListener('click', () => this.closeLightbox());
+        
+        // Navigation
+        prevBtn?.addEventListener('click', () => this.navigateLightbox(-1));
+        nextBtn?.addEventListener('click', () => this.navigateLightbox(1));
+    }
+    
+    openLightbox(index) {
+        this.currentIndex = index;
+        this.isLightboxOpen = true;
+        
+        // Get only image items for lightbox
+        const imageItems = this.mediaItems.filter(item => item.type === 'image');
+        const item = imageItems[index];
+        
+        if (!item) return;
+        
+        const lightboxImage = this.lightbox.querySelector('.lightbox-image');
+        const lightboxVideo = this.lightbox.querySelector('.lightbox-video');
+        const titleEl = this.lightbox.querySelector('.lightbox-title');
+        const descEl = this.lightbox.querySelector('.lightbox-description');
+        const counterEl = this.lightbox.querySelector('.lightbox-counter');
+        
+        // Show image, hide video
+        lightboxImage.style.display = 'block';
+        lightboxVideo.style.display = 'none';
+        
+        // Set content
+        lightboxImage.src = item.imageSrc;
+        lightboxImage.alt = item.altText;
+        titleEl.textContent = item.title;
+        descEl.textContent = item.description;
+        counterEl.textContent = `${index + 1} از ${imageItems.length}`;
+        
+        // Show lightbox
+        this.lightbox.hidden = false;
+        this.lightbox.removeAttribute('hidden');
+        document.body.style.overflow = 'hidden';
+        
+        // Focus management for accessibility
+        this.lightbox.focus();
+        
+        // Track view for SEO analytics
+        this.trackMediaView(item);
+    }
+    
+    closeLightbox() {
+        this.isLightboxOpen = false;
+        this.lightbox.hidden = true;
+        document.body.style.overflow = '';
+    }
+    
+    navigateLightbox(direction) {
+        const imageItems = this.mediaItems.filter(item => item.type === 'image');
+        this.currentIndex = (this.currentIndex + direction + imageItems.length) % imageItems.length;
+        this.openLightbox(this.currentIndex);
+    }
+    
+    // Keyboard navigation
+    initializeKeyboardNavigation() {
+        document.addEventListener('keydown', (e) => {
+            if (!this.isLightboxOpen) return;
+            
+            switch (e.key) {
+                case 'Escape':
+                    this.closeLightbox();
+                    break;
+                case 'ArrowRight':
+                    this.navigateLightbox(-1); // RTL
+                    break;
+                case 'ArrowLeft':
+                    this.navigateLightbox(1); // RTL
+                    break;
+            }
+        });
+    }
+    
+    // Lazy loading for media
+    initializeLazyLoadingMedia() {
+        const mediaObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    
+                    // Handle images
+                    if (target.tagName === 'IMG' && target.dataset.src) {
+                        this.loadImage(target);
+                    }
+                    
+                    // Handle video posters
+                    if (target.classList.contains('video-poster') && target.dataset.poster) {
+                        target.style.backgroundImage = `url('${target.dataset.poster}')`;
+                    }
+                    
+                    // Handle picture sources
+                    if (target.tagName === 'IMG') {
+                        const picture = target.closest('picture');
+                        if (picture) {
+                            picture.querySelectorAll('source').forEach(source => {
+                                if (source.dataset.srcset) {
+                                    source.srcset = source.dataset.srcset;
+                                }
+                            });
+                        }
+                        
+                        // Handle srcset
+                        if (target.dataset.srcset) {
+                            target.srcset = target.dataset.srcset;
+                        }
+                    }
+                    
+                    mediaObserver.unobserve(target);
+                }
+            });
+        }, {
+            rootMargin: '100px 0px',
+            threshold: 0.1
+        });
+        
+        // Observe images
+        document.querySelectorAll('.media-image[data-src]').forEach(img => {
+            mediaObserver.observe(img);
+        });
+        
+        // Observe video posters
+        document.querySelectorAll('.video-poster[data-poster]').forEach(poster => {
+            mediaObserver.observe(poster);
+        });
+    }
+    
+    loadImage(img) {
+        const src = img.dataset.src;
+        
+        // Create a new image to preload
+        const preloadImg = new Image();
+        preloadImg.onload = () => {
+            img.src = src;
+            img.classList.add('loaded');
+            img.removeAttribute('data-src');
+        };
+        preloadImg.onerror = () => {
+            console.error('Failed to load image:', src);
+        };
+        preloadImg.src = src;
+    }
+    
+    // Video player functionality
+    initializeVideoPlayers() {
+        const playButtons = document.querySelectorAll('.video-play-btn');
+        
+        playButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.playVideo(btn);
+            });
+        });
+    }
+    
+    playVideo(button) {
+        const wrapper = button.closest('.video-wrapper');
+        const poster = wrapper.querySelector('.video-poster');
+        const video = wrapper.querySelector('.media-video');
+        
+        if (!video) return;
+        
+        // Load video sources
+        video.querySelectorAll('source').forEach(source => {
+            if (source.dataset.src) {
+                source.src = source.dataset.src;
+            }
+        });
+        
+        // Load video poster
+        if (video.dataset.poster) {
+            video.poster = video.dataset.poster;
+        }
+        
+        video.load();
+        
+        // Hide poster, show video
+        poster.style.display = 'none';
+        video.style.display = 'block';
+        
+        // Play video
+        video.play().catch(error => {
+            console.log('Video autoplay prevented:', error);
+        });
+        
+        // Track video play for SEO analytics
+        this.trackVideoPlay(wrapper);
+    }
+    
+    // Load more functionality
+    initializeLoadMore() {
+        if (!this.loadMoreBtn) return;
+        
+        this.loadMoreBtn.addEventListener('click', () => {
+            this.loadMoreMedia();
+        });
+    }
+    
+    async loadMoreMedia() {
+        this.loadMoreBtn.disabled = true;
+        this.loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>در حال بارگذاری...</span>';
+        
+        // Simulate loading more items (in production, fetch from API)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // In production, you would fetch more items from the API here
+        // For now, just hide the button
+        this.loadMoreBtn.style.display = 'none';
+    }
+    
+    // Analytics tracking for SEO
+    initializeAnalytics() {
+        // Track when media items come into view
+        const analyticsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const item = this.mediaItems.find(i => i.element === entry.target);
+                    if (item && !item.viewed) {
+                        item.viewed = true;
+                        this.trackMediaImpression(item);
+                    }
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+        
+        this.mediaItems.forEach(item => {
+            analyticsObserver.observe(item.element);
+        });
+    }
+    
+    trackMediaView(item) {
+        // Send to analytics (Google Analytics, etc.)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'media_view', {
+                'media_type': item.type,
+                'media_title': item.title,
+                'media_index': item.index
+            });
+        }
+        console.log('Media viewed:', item.title);
+    }
+    
+    trackVideoPlay(wrapper) {
+        const title = wrapper.querySelector('.media-info h3')?.textContent || 'Unknown Video';
+        
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'video_play', {
+                'video_title': title
+            });
+        }
+        console.log('Video played:', title);
+    }
+    
+    trackMediaImpression(item) {
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'media_impression', {
+                'media_type': item.type,
+                'media_title': item.title
+            });
+        }
+    }
+}
+
+// ==========================================
+// Media Upload with SEO Fields
+// ==========================================
+
+class MediaUploader {
+    constructor(options = {}) {
+        this.uploadZone = options.uploadZone || document.querySelector('.media-upload-zone');
+        this.form = options.form || document.querySelector('.media-upload-form');
+        this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024; // 10MB
+        this.allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        this.allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+        
+        if (this.uploadZone) {
+            this.init();
+        }
+    }
+    
+    init() {
+        this.initDragAndDrop();
+        this.initFileInput();
+        this.initSEOFields();
+    }
+    
+    initDragAndDrop() {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            this.uploadZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            this.uploadZone.addEventListener(eventName, () => {
+                this.uploadZone.classList.add('dragover');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            this.uploadZone.addEventListener(eventName, () => {
+                this.uploadZone.classList.remove('dragover');
+            });
+        });
+        
+        this.uploadZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            this.handleFiles(files);
+        });
+    }
+    
+    initFileInput() {
+        const input = this.uploadZone.querySelector('input[type="file"]');
+        if (input) {
+            this.uploadZone.addEventListener('click', () => input.click());
+            input.addEventListener('change', (e) => {
+                this.handleFiles(e.target.files);
+            });
+        }
+    }
+    
+    handleFiles(files) {
+        Array.from(files).forEach(file => {
+            if (this.validateFile(file)) {
+                this.uploadFile(file);
+            }
+        });
+    }
+    
+    validateFile(file) {
+        const isImage = this.allowedImageTypes.includes(file.type);
+        const isVideo = this.allowedVideoTypes.includes(file.type);
+        
+        if (!isImage && !isVideo) {
+            showNotification('فرمت فایل پشتیبانی نمی‌شود. لطفاً از JPEG، PNG، WebP، MP4 یا WebM استفاده کنید.', 'error');
+            return false;
+        }
+        
+        if (file.size > this.maxFileSize) {
+            showNotification('حجم فایل بیش از حد مجاز است. حداکثر 10MB', 'error');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    async uploadFile(file) {
+        const progressBar = this.form?.querySelector('.upload-progress');
+        const progressBarInner = progressBar?.querySelector('.upload-progress-bar');
+        
+        if (progressBar) {
+            progressBar.classList.add('active');
+        }
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // Add SEO fields
+        const altText = document.getElementById('media-alt-text')?.value || '';
+        const title = document.getElementById('media-title')?.value || '';
+        const description = document.getElementById('media-description')?.value || '';
+        const caption = document.getElementById('media-caption')?.value || '';
+        
+        formData.append('alt_text', altText);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('caption', caption);
+        
+        try {
+            // Simulate upload (replace with actual API call)
+            for (let i = 0; i <= 100; i += 10) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                if (progressBarInner) {
+                    progressBarInner.style.width = `${i}%`;
+                }
+            }
+            
+            showNotification('فایل با موفقیت آپلود شد!', 'success');
+            this.resetForm();
+            
+        } catch (error) {
+            showNotification('خطا در آپلود فایل. لطفاً دوباره تلاش کنید.', 'error');
+        } finally {
+            if (progressBar) {
+                progressBar.classList.remove('active');
+            }
+        }
+    }
+    
+    initSEOFields() {
+        // Alt text character counter
+        const altTextInput = document.getElementById('media-alt-text');
+        const altTextCounter = document.getElementById('alt-text-counter');
+        
+        if (altTextInput && altTextCounter) {
+            altTextInput.addEventListener('input', () => {
+                const length = altTextInput.value.length;
+                altTextCounter.textContent = `${length}/125 کاراکتر`;
+                
+                if (length > 125) {
+                    altTextCounter.classList.add('error');
+                } else if (length > 100) {
+                    altTextCounter.classList.add('warning');
+                } else {
+                    altTextCounter.classList.remove('warning', 'error');
+                }
+            });
+        }
+        
+        // Title character counter
+        const titleInput = document.getElementById('media-title');
+        const titleCounter = document.getElementById('title-counter');
+        
+        if (titleInput && titleCounter) {
+            titleInput.addEventListener('input', () => {
+                const length = titleInput.value.length;
+                titleCounter.textContent = `${length}/70 کاراکتر`;
+                
+                if (length > 70) {
+                    titleCounter.classList.add('error');
+                } else if (length > 60) {
+                    titleCounter.classList.add('warning');
+                } else {
+                    titleCounter.classList.remove('warning', 'error');
+                }
+            });
+        }
+        
+        // Description counter
+        const descInput = document.getElementById('media-description');
+        const descCounter = document.getElementById('description-counter');
+        
+        if (descInput && descCounter) {
+            descInput.addEventListener('input', () => {
+                const length = descInput.value.length;
+                descCounter.textContent = `${length}/160 کاراکتر`;
+                
+                if (length > 160) {
+                    descCounter.classList.add('error');
+                } else if (length > 140) {
+                    descCounter.classList.add('warning');
+                } else {
+                    descCounter.classList.remove('warning', 'error');
+                }
+            });
+        }
+    }
+    
+    resetForm() {
+        if (this.form) {
+            this.form.reset();
+        }
+    }
+}
+
+// ==========================================
+// Image Optimization Utilities
+// ==========================================
+
+const ImageOptimization = {
+    // Check WebP support
+    supportsWebP: false,
+    
+    async checkWebPSupport() {
+        return new Promise((resolve) => {
+            const webP = new Image();
+            webP.onload = webP.onerror = () => {
+                this.supportsWebP = webP.height === 2;
+                resolve(this.supportsWebP);
+            };
+            webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+        });
+    },
+    
+    // Generate responsive image srcset
+    generateSrcset(basePath, sizes = [400, 800, 1200]) {
+        const extension = basePath.split('.').pop();
+        const pathWithoutExt = basePath.replace(`.${extension}`, '');
+        
+        return sizes.map(size => `${pathWithoutExt}-${size}.${extension} ${size}w`).join(', ');
+    },
+    
+    // Calculate optimal image dimensions based on container
+    calculateOptimalSize(containerWidth, aspectRatio = 4/3) {
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const optimalWidth = Math.ceil(containerWidth * devicePixelRatio);
+        const optimalHeight = Math.ceil(optimalWidth / aspectRatio);
+        
+        return { width: optimalWidth, height: optimalHeight };
+    },
+    
+    // Preload critical images for LCP optimization
+    preloadCriticalImage(src, type = 'image/jpeg') {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        link.type = type;
+        document.head.appendChild(link);
+    },
+    
+    // Generate blurhash placeholder (simplified version)
+    generatePlaceholder(width, height, color = '#f0f0f0') {
+        return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${width} ${height}'%3E%3Crect fill='${encodeURIComponent(color)}' width='${width}' height='${height}'/%3E%3C/svg%3E`;
+    }
+};
+
+// ==========================================
+// Video SEO Optimization
+// ==========================================
+
+const VideoSEO = {
+    // Generate video schema markup
+    generateVideoSchema(options) {
+        return {
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": options.title,
+            "description": options.description,
+            "thumbnailUrl": options.thumbnailUrl,
+            "uploadDate": options.uploadDate,
+            "duration": options.duration,
+            "contentUrl": options.contentUrl,
+            "embedUrl": options.embedUrl,
+            "publisher": {
+                "@type": "Organization",
+                "name": options.publisherName,
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": options.publisherLogo
+                }
+            }
+        };
+    },
+    
+    // Add video captions for accessibility and SEO
+    addCaptions(video, captionsUrl, language = 'fa') {
+        const track = document.createElement('track');
+        track.kind = 'captions';
+        track.src = captionsUrl;
+        track.srclang = language;
+        track.label = language === 'fa' ? 'فارسی' : 'English';
+        track.default = true;
+        video.appendChild(track);
+    },
+    
+    // Generate video sitemap entry
+    generateSitemapEntry(options) {
+        return `
+<video:video>
+    <video:thumbnail_loc>${options.thumbnailUrl}</video:thumbnail_loc>
+    <video:title>${options.title}</video:title>
+    <video:description>${options.description}</video:description>
+    <video:content_loc>${options.contentUrl}</video:content_loc>
+    <video:duration>${options.durationSeconds}</video:duration>
+    <video:publication_date>${options.uploadDate}</video:publication_date>
+</video:video>`;
+    }
+};
+
+// Initialize Media Gallery when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Check WebP support
+    ImageOptimization.checkWebPSupport().then(supported => {
+        if (supported) {
+            document.documentElement.classList.add('webp-supported');
+        }
+    });
+    
+    // Initialize media gallery
+    const gallery = new MediaGallery();
+    
+    // Initialize media uploader (if upload form exists)
+    const uploader = new MediaUploader();
+    
+    // Make available globally for external use
+    window.MediaGallery = MediaGallery;
+    window.MediaUploader = MediaUploader;
+    window.ImageOptimization = ImageOptimization;
+    window.VideoSEO = VideoSEO;
+});
