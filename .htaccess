@@ -1,0 +1,65 @@
+# Ghoncheye Lalehzar CMS - URL Rewriting Configuration
+# Place this file in your web root directory
+
+# Enable URL rewriting
+RewriteEngine On
+
+# Set the base directory (adjust if CMS is in subdirectory)
+# RewriteBase /
+
+# Don't rewrite requests for existing files
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Don't rewrite API requests
+RewriteCond %{REQUEST_URI} ^/api\.php [OR]
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^ - [L]
+
+# Don't rewrite admin panel requests
+RewriteCond %{REQUEST_URI} ^/admin/
+RewriteRule ^ - [L]
+
+# Don't rewrite asset requests
+RewriteCond %{REQUEST_URI} ^/assets/ [OR]
+RewriteCond %{REQUEST_URI} ^/uploads/ [OR]
+RewriteCond %{REQUEST_URI} ^/themes/ [OR]
+RewriteCond %{REQUEST_URI} ^/plugins/
+RewriteRule ^ - [L]
+
+# Route all other requests through the router
+RewriteRule ^(.*)$ router.php?url=$1 [QSA,L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^(config\.php|permalink\.php|\.htaccess|\.env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json
+</IfModule>
+
+# Cache static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>

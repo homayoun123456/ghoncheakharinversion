@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنظیمات پیوندهای یکتا - غنچه لاله‌زار</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo h2 {
+            font-size: 1.4rem;
+            color: #e74c3c;
+        }
+        
+        .logo span {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-right: 3px solid transparent;
+        }
+        
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-right-color: #e74c3c;
+        }
+        
+        .nav-menu li a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 260px;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .header .breadcrumb {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .header .breadcrumb a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h3 {
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group .description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        
+        /* Radio Structure Options */
+        .structure-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .structure-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .structure-option:hover {
+            background: #f0f2f5;
+        }
+        
+        .structure-option.selected {
+            background: rgba(231, 76, 60, 0.05);
+            border-color: #e74c3c;
+        }
+        
+        .structure-option input[type="radio"] {
+            margin-left: 15px;
+            transform: scale(1.2);
+            accent-color: #e74c3c;
+        }
+        
+        .structure-option .info {
+            flex: 1;
+        }
+        
+        .structure-option .info .label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .structure-option .info .example {
+            font-size: 0.85rem;
+            color: #888;
+            font-family: monospace;
+            direction: ltr;
+            text-align: right;
+        }
+        
+        /* Custom Structure Input */
+        .custom-structure-input {
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .custom-structure-input.visible {
+            display: block;
+        }
+        
+        .custom-structure-input label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .structure-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .structure-tag {
+            padding: 8px 15px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .structure-tag:hover {
+            background: #c0392b;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #27ae60;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(28px);
+        }
+        
+        /* Preview Box */
+        .preview-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .preview-box h4 {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .preview-box .url {
+            font-family: monospace;
+            font-size: 1.1rem;
+            direction: ltr;
+            text-align: right;
+            word-break: break-all;
+        }
+        
+        /* Redirects Table */
+        .redirects-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .redirects-table th,
+        .redirects-table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .redirects-table th {
+            background: #f8f9fa;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .redirects-table td {
+            font-size: 0.9rem;
+        }
+        
+        .redirects-table .url-cell {
+            font-family: monospace;
+            direction: ltr;
+            text-align: right;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .redirects-table .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .redirects-table .action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .redirects-table .redirect-type {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #3498db;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e74c3c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .tab:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .tab.active {
+            background: white;
+            color: #e74c3c;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar .logo span,
+            .sidebar .nav-menu li a span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-right: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-right: 0;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>غنچه لاله‌زار</h2>
+                <span>پنل مدیریت</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> <span>داشبورد</span></a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> <span>نوشته‌ها</span></a></li>
+                <li><a href="#"><i class="fas fa-copy"></i> <span>برگه‌ها</span></a></li>
+                <li><a href="#"><i class="fas fa-images"></i> <span>رسانه</span></a></li>
+                <li><a href="admin-permalinks.html" class="active"><i class="fas fa-link"></i> <span>پیوندهای یکتا</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> <span>تنظیمات</span></a></li>
+            </ul>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <h1>تنظیمات پیوندهای یکتا</h1>
+                    <div class="breadcrumb">
+                        <a href="index.html">داشبورد</a> / پیوندهای یکتا
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="settings">تنظیمات ساختار</button>
+                <button class="tab" data-tab="redirects">ریدایرکت‌ها</button>
+                <button class="tab" data-tab="tools">ابزارها</button>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cog"></i> ساختار پیوند نوشته‌ها</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="margin-bottom: 20px; color: #666;">
+                            ساختاری را که برای پیوندهای یکتای نوشته‌های جدید می‌خواهید انتخاب کنید.
+                            <strong>توجه:</strong> تغییر این تنظیم فقط روی نوشته‌های جدید اعمال می‌شود و نوشته‌های قبلی تغییر نمی‌کنند.
+                        </p>
+                        
+                        <div class="structure-options" id="structureOptions">
+                            <!-- Options will be loaded dynamically -->
+                        </div>
+                        
+                        <div class="custom-structure-input" id="customStructureInput">
+                            <label>ساختار سفارشی:</label>
+                            <input type="text" class="form-control" id="customStructure" placeholder="/%year%/%month%/%postname%/">
+                            <div class="structure-tags">
+                                <span class="structure-tag" data-tag="%year%">%year%</span>
+                                <span class="structure-tag" data-tag="%month%">%month%</span>
+                                <span class="structure-tag" data-tag="%day%">%day%</span>
+                                <span class="structure-tag" data-tag="%postname%">%postname%</span>
+                                <span class="structure-tag" data-tag="%post_id%">%post_id%</span>
+                                <span class="structure-tag" data-tag="%category%">%category%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="preview-box" id="previewBox">
+                            <h4>پیش‌نمایش:</h4>
+                            <div class="url" id="previewUrl">https://example.com/2024/12/sample-post/</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-sliders-h"></i> تنظیمات اختیاری</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="trailingSlash" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <strong>اسلش انتهایی</strong>
+                                    <p class="description">اضافه کردن / در انتهای آدرس‌ها</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="redirectOldUrls" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <strong>ریدایرکت خودکار</strong>
+                                    <p class="description">هنگام تغییر آدرس، آدرس قدیمی به جدید ریدایرکت شود</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>پیشوند دسته‌بندی:</label>
+                            <input type="text" class="form-control" id="categoryBase" value="category" style="max-width: 300px;">
+                            <p class="description">مثال: example.com/<strong>category</strong>/news/</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>پیشوند برچسب:</label>
+                            <input type="text" class="form-control" id="tagBase" value="tag" style="max-width: 300px;">
+                            <p class="description">مثال: example.com/<strong>tag</strong>/important/</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> ذخیره تنظیمات
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Redirects Tab -->
+            <div id="redirects-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exchange-alt"></i> لیست ریدایرکت‌ها</h3>
+                        <button class="btn btn-primary" onclick="showAddRedirectModal()">
+                            <i class="fas fa-plus"></i> افزودن ریدایرکت
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="redirectsLoading" class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                        <div id="redirectsEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-random"></i>
+                            <h3>هیچ ریدایرکتی وجود ندارد</h3>
+                            <p>هنگام تغییر آدرس نوشته‌ها، ریدایرکت‌ها به صورت خودکار ایجاد می‌شوند.</p>
+                        </div>
+                        <table class="redirects-table" id="redirectsTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>آدرس قدیمی</th>
+                                    <th>آدرس جدید</th>
+                                    <th>نوع</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="redirectsBody">
+                                <!-- Redirects will be loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tools Tab -->
+            <div id="tools-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tools"></i> ابزارهای پیوند یکتا</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            این ابزارها برای مدیریت و بازسازی پیوندهای یکتا استفاده می‌شوند.
+                        </div>
+                        
+                        <div class="form-group">
+                            <h4 style="margin-bottom: 15px;">بازسازی پیوندها</h4>
+                            <p class="description" style="margin-bottom: 15px;">
+                                پیوندهای یکتای تمام نوشته‌ها و برگه‌ها را بر اساس ساختار جدید بازسازی کنید.
+                                <br><strong>توجه:</strong> نوشته‌هایی که پیوند سفارشی دارند تغییر نمی‌کنند.
+                            </p>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <button class="btn btn-warning" onclick="regeneratePermalinks('post')">
+                                    <i class="fas fa-sync"></i> بازسازی نوشته‌ها
+                                </button>
+                                <button class="btn btn-warning" onclick="regeneratePermalinks('page')">
+                                    <i class="fas fa-sync"></i> بازسازی برگه‌ها
+                                </button>
+                                <button class="btn btn-secondary" onclick="regeneratePermalinks('all')">
+                                    <i class="fas fa-sync-alt"></i> بازسازی همه
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <div class="form-group">
+                            <h4 style="margin-bottom: 15px;">تکمیل پیوندهای ناقص</h4>
+                            <p class="description" style="margin-bottom: 15px;">
+                                نوشته‌ها و برگه‌هایی که پیوند یکتا ندارند را با ساختار فعلی تکمیل کنید.
+                            </p>
+                            <button class="btn btn-primary" onclick="updateMissingPermalinks()">
+                                <i class="fas fa-magic"></i> تکمیل پیوندهای ناقص
+                            </button>
+                        </div>
+                        
+                        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <div class="form-group">
+                            <h4 style="margin-bottom: 15px;">پاکسازی ریدایرکت‌ها</h4>
+                            <p class="description" style="margin-bottom: 15px;">
+                                تمام ریدایرکت‌های قدیمی را حذف کنید. این کار غیرقابل بازگشت است!
+                            </p>
+                            <button class="btn btn-secondary" onclick="clearAllRedirects()" style="background: #c0392b;">
+                                <i class="fas fa-trash"></i> پاکسازی ریدایرکت‌ها
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Add Redirect Modal -->
+    <div class="modal" id="addRedirectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>افزودن ریدایرکت جدید</h3>
+                <button class="modal-close" onclick="closeModal('addRedirectModal')">&times;</button>
+            </div>
+            <form onsubmit="addRedirect(event)">
+                <div class="form-group">
+                    <label>آدرس قدیمی:</label>
+                    <input type="text" class="form-control" id="oldUrl" placeholder="/old-post-url/" required dir="ltr">
+                </div>
+                <div class="form-group">
+                    <label>آدرس جدید:</label>
+                    <input type="text" class="form-control" id="newUrl" placeholder="/new-post-url/" required dir="ltr">
+                </div>
+                <div class="form-group">
+                    <label>نوع ریدایرکت:</label>
+                    <select class="form-control" id="redirectType">
+                        <option value="301">301 - دائمی (Permanent)</option>
+                        <option value="302">302 - موقت (Temporary)</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> افزودن
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addRedirectModal')">
+                        انصراف
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // API Base URL - adjust based on your setup
+        const API_BASE = 'http://localhost:3001/api';
+        
+        // Get token from localStorage
+        function getToken() {
+            return localStorage.getItem('auth_token');
+        }
+        
+        // API Request helper
+        async function apiRequest(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                }
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { error: error.message };
+            }
+        }
+        
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                
+                if (tab.dataset.tab === 'redirects') {
+                    loadRedirects();
+                }
+            });
+        });
+        
+        // Load settings
+        async function loadSettings() {
+            const result = await apiRequest('/permalinks/settings');
+            
+            if (result.success) {
+                const settings = result.settings;
+                const structures = result.structures;
+                
+                // Render structure options
+                const container = document.getElementById('structureOptions');
+                container.innerHTML = '';
+                
+                for (const [key, structure] of Object.entries(structures)) {
+                    const isSelected = settings.post_permalink_structure === structure.pattern;
+                    const option = document.createElement('label');
+                    option.className = `structure-option ${isSelected ? 'selected' : ''}`;
+                    option.innerHTML = `
+                        <input type="radio" name="structure" value="${structure.pattern}" ${isSelected ? 'checked' : ''}>
+                        <div class="info">
+                            <div class="label">${structure.label}</div>
+                            <div class="example">${structure.example || structure.pattern}</div>
+                        </div>
+                    `;
+                    container.appendChild(option);
+                    
+                    option.querySelector('input').addEventListener('change', (e) => {
+                        document.querySelectorAll('.structure-option').forEach(o => o.classList.remove('selected'));
+                        option.classList.add('selected');
+                        
+                        if (key === 'custom') {
+                            document.getElementById('customStructureInput').classList.add('visible');
+                        } else {
+                            document.getElementById('customStructureInput').classList.remove('visible');
+                        }
+                        
+                        updatePreview();
+                    });
+                }
+                
+                // Load other settings
+                document.getElementById('trailingSlash').checked = settings.use_trailing_slash === '1';
+                document.getElementById('redirectOldUrls').checked = settings.redirect_old_urls === '1';
+                document.getElementById('categoryBase').value = settings.category_base || 'category';
+                document.getElementById('tagBase').value = settings.tag_base || 'tag';
+                
+                updatePreview();
+            }
+        }
+        
+        // Update preview
+        function updatePreview() {
+            const selectedRadio = document.querySelector('input[name="structure"]:checked');
+            let structure = selectedRadio ? selectedRadio.value : '/%year%/%month%/%postname%/';
+            
+            if (structure === '' && document.getElementById('customStructure').value) {
+                structure = document.getElementById('customStructure').value;
+            }
+            
+            // Replace placeholders with sample values
+            const date = new Date();
+            let preview = structure
+                .replace('%year%', date.getFullYear())
+                .replace('%month%', String(date.getMonth() + 1).padStart(2, '0'))
+                .replace('%day%', String(date.getDate()).padStart(2, '0'))
+                .replace('%postname%', 'sample-post')
+                .replace('%post_id%', '123')
+                .replace('%category%', 'news');
+            
+            const trailingSlash = document.getElementById('trailingSlash').checked;
+            if (trailingSlash && !preview.endsWith('/')) {
+                preview += '/';
+            } else if (!trailingSlash && preview.endsWith('/')) {
+                preview = preview.slice(0, -1);
+            }
+            
+            document.getElementById('previewUrl').textContent = `https://example.com${preview}`;
+        }
+        
+        // Structure tag click
+        document.querySelectorAll('.structure-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const input = document.getElementById('customStructure');
+                input.value += tag.dataset.tag;
+                updatePreview();
+            });
+        });
+        
+        // Custom structure input
+        document.getElementById('customStructure').addEventListener('input', updatePreview);
+        document.getElementById('trailingSlash').addEventListener('change', updatePreview);
+        
+        // Save settings
+        async function saveSettings() {
+            const selectedRadio = document.querySelector('input[name="structure"]:checked');
+            let structure = selectedRadio ? selectedRadio.value : '/%year%/%month%/%postname%/';
+            
+            if (structure === '') {
+                structure = document.getElementById('customStructure').value || '/%postname%/';
+            }
+            
+            const settings = {
+                post_permalink_structure: structure,
+                use_trailing_slash: document.getElementById('trailingSlash').checked ? '1' : '0',
+                redirect_old_urls: document.getElementById('redirectOldUrls').checked ? '1' : '0',
+                category_base: document.getElementById('categoryBase').value,
+                tag_base: document.getElementById('tagBase').value
+            };
+            
+            const result = await apiRequest('/permalinks/settings', 'PUT', settings);
+            
+            if (result.success) {
+                showAlert('تنظیمات با موفقیت ذخیره شد!', 'success');
+            } else {
+                showAlert('خطا در ذخیره تنظیمات: ' + (result.error || 'Unknown error'), 'error');
+            }
+        }
+        
+        // Load redirects
+        async function loadRedirects() {
+            document.getElementById('redirectsLoading').style.display = 'flex';
+            document.getElementById('redirectsTable').style.display = 'none';
+            document.getElementById('redirectsEmpty').style.display = 'none';
+            
+            const result = await apiRequest('/redirects');
+            
+            document.getElementById('redirectsLoading').style.display = 'none';
+            
+            if (result.success && result.redirects.length > 0) {
+                document.getElementById('redirectsTable').style.display = 'table';
+                const tbody = document.getElementById('redirectsBody');
+                tbody.innerHTML = '';
+                
+                result.redirects.forEach(redirect => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="url-cell" title="${redirect.old_url}">${redirect.old_url}</td>
+                        <td class="url-cell" title="${redirect.new_url}">${redirect.new_url}</td>
+                        <td><span class="redirect-type">${redirect.redirect_type}</span></td>
+                        <td>
+                            <button class="action-btn delete" onclick="deleteRedirect(${redirect.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                document.getElementById('redirectsEmpty').style.display = 'block';
+            }
+        }
+        
+        // Show add redirect modal
+        function showAddRedirectModal() {
+            document.getElementById('addRedirectModal').classList.add('show');
+        }
+        
+        // Close modal
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+        
+        // Add redirect
+        async function addRedirect(e) {
+            e.preventDefault();
+            
+            const data = {
+                old_url: document.getElementById('oldUrl').value,
+                new_url: document.getElementById('newUrl').value,
+                redirect_type: parseInt(document.getElementById('redirectType').value)
+            };
+            
+            const result = await apiRequest('/redirects', 'POST', data);
+            
+            if (result.success) {
+                showAlert('ریدایرکت با موفقیت اضافه شد!', 'success');
+                closeModal('addRedirectModal');
+                loadRedirects();
+                
+                // Reset form
+                document.getElementById('oldUrl').value = '';
+                document.getElementById('newUrl').value = '';
+            } else {
+                showAlert('خطا در افزودن ریدایرکت: ' + (result.error || 'Unknown error'), 'error');
+            }
+        }
+        
+        // Delete redirect
+        async function deleteRedirect(id) {
+            if (!confirm('آیا از حذف این ریدایرکت اطمینان دارید؟')) {
+                return;
+            }
+            
+            const result = await apiRequest(`/redirects/${id}`, 'DELETE');
+            
+            if (result.success) {
+                showAlert('ریدایرکت حذف شد!', 'success');
+                loadRedirects();
+            } else {
+                showAlert('خطا در حذف ریدایرکت', 'error');
+            }
+        }
+        
+        // Regenerate permalinks
+        async function regeneratePermalinks(contentType) {
+            if (!confirm(`آیا از بازسازی پیوندهای ${contentType === 'all' ? 'همه محتوا' : contentType === 'post' ? 'نوشته‌ها' : 'برگه‌ها'} اطمینان دارید؟`)) {
+                return;
+            }
+            
+            const result = await apiRequest('/permalinks/generate', 'POST', {
+                content_type: contentType,
+                preserve_existing: true
+            });
+            
+            if (result.success) {
+                showAlert(`${result.updated} مورد بروزرسانی شد. ${result.redirects_created} ریدایرکت ایجاد شد.`, 'success');
+            } else {
+                showAlert('خطا در بازسازی پیوندها: ' + (result.error || 'Unknown error'), 'error');
+            }
+        }
+        
+        // Update missing permalinks
+        async function updateMissingPermalinks() {
+            const result = await apiRequest('/permalinks/generate', 'POST', {
+                content_type: 'all',
+                preserve_existing: true
+            });
+            
+            if (result.success) {
+                showAlert(`${result.updated} مورد تکمیل شد!`, 'success');
+            } else {
+                showAlert('خطا: ' + (result.error || 'Unknown error'), 'error');
+            }
+        }
+        
+        // Clear all redirects
+        async function clearAllRedirects() {
+            if (!confirm('آیا از حذف تمام ریدایرکت‌ها اطمینان دارید؟ این عمل قابل بازگشت نیست!')) {
+                return;
+            }
+            
+            // This would need a bulk delete endpoint
+            showAlert('این عملکرد در حال حاضر در دسترس نیست.', 'error');
+        }
+        
+        // Click outside modal to close
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+        });
+    </script>
+</body>
+</html>
